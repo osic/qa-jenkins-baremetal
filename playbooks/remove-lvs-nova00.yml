@@ -1,5 +1,5 @@
 ---
-- hosts: controller:logging:cinder:swift:!compute
+- hosts: infra:logger:cinder:swift:network:!compute
 
   tasks:
   - name: Remove LVS nova00
