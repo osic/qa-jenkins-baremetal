@@ -3,6 +3,6 @@
 # neutron-server, neutron-agents
 network_hosts:
   network01:
-    ip: 172.29.236.240
+    ip: 172.24.8.27
   network02:
-    ip: 172.29.236.241
+    ip: 172.24.8.28

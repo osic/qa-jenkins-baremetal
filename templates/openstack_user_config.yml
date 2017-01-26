@@ -1,20 +1,24 @@
 ---
+# 502 - MANAGEMENT_NET - 172.24.8.0/22
+# 530 - STORAGE_NET    - 172.24.100.0/22
+# 531 - OVERLAY_NET    - 172.24.104.0/22
+# 532 - FLAT_NET       - 172.24.108.0/22
+
 # /etc/openstack_deploy/openstack_user_config.yml
 cidr_networks:
-  container: 172.29.236.0/22
-  tunnel: 172.29.240.0/22
-  storage: 172.29.244.0/22
-  snet: 172.29.248.0/22
+  container: 172.24.8.0/22
+  storage: 172.24.100.0/22
+  tunnel: 172.24.104.0/22
 
 used_ips:
-  - 172.29.236.1,172.29.236.254
-  - 172.29.240.1,172.29.240.254
-  - 172.29.244.1,172.29.244.254
-  - 172.29.248.1,172.29.248.254
+  - 172.24.8.1,172.24.9.254
+  - 172.24.100.1,172.24.101.254
+  - 172.24.104.1,172.24.105.254
+  - 172.24.108.1,172.24.109.254
 
 global_overrides:
-  internal_lb_vip_address: 172.29.236.100
-  external_lb_vip_address: 172.24.96.249
+  internal_lb_vip_address: "172.24.9.253"
+  external_lb_vip_address: "172.24.109.253"
   management_bridge: "br-mgmt"
   tunnel_bridge: "br-vxlan"
   provider_networks:
@@ -54,7 +58,7 @@ global_overrides:
         container_mtu: "9000"
         ip_from_q: "tunnel"
         type: "vxlan"
-        range: "1:1000"
+        range: "5000:50000"
         net_name: "vxlan"
     - network:
         group_binds:
@@ -63,7 +67,7 @@ global_overrides:
         container_type: "veth"
         container_interface: "eth11"
         type: "vlan"
-        range: "206:215"
+        range: "539:549"
         net_name: "vlan"
     - network:
         group_binds:
@@ -71,40 +75,30 @@ global_overrides:
         container_bridge: "br-vlan"
         container_type: "veth"
         container_interface: "eth12"
-        host_bind_override: "br-vlan-flat"
+        host_bind_override: "bond0.532"
         type: "flat"
         net_name: "flat"
-    - network:
-        group_binds:
-          - glance_api
-          - nova_compute
-          - neutron_linuxbridge_agent
-        type: "raw"
-        container_bridge: "br-snet"
-        container_type: "veth"
-        container_interface: "eth3"
-        ip_from_q: "snet"
 
 shared-infra_hosts:
   infra01:
-    ip: 172.29.236.101
+    ip: 172.24.8.23
   infra02:
-    ip: 172.29.236.102
+    ip: 172.24.8.24
   infra03:
-    ip: 172.29.236.103
+    ip: 172.24.8.25
 
 repo-infra_hosts:
   infra01:
-    ip: 172.29.236.101
+    ip: 172.24.8.23
   infra02:
-    ip: 172.29.236.102
+    ip: 172.24.8.24
   infra03:
-    ip: 172.29.236.103
+    ip: 172.24.8.25
 
 os-infra_hosts:
   infra01:
-    ip: 172.29.236.101
+    ip: 172.24.8.23
   infra02:
-    ip: 172.29.236.102
+    ip: 172.24.8.24
   infra03:
-    ip: 172.29.236.103
+    ip: 172.24.8.25

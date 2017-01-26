@@ -2,15 +2,15 @@
 # /etc/openstack_deploy/conf.d/cinder.yml
 storage-infra_hosts:
   infra01:
-    ip: 172.29.236.101
+    ip: 172.24.8.23
   infra02:
-    ip: 172.29.236.102
+    ip: 172.24.8.24
   infra03:
-    ip: 172.29.236.103
+    ip: 172.24.8.25
 
 storage_hosts:
   cinder01:
-    ip: 172.29.236.130
+    ip: 172.24.8.29
     container_vars:
       cinder_storage_availability_zone: nova
       cinder_default_availability_zone: nova
@@ -22,7 +22,7 @@ storage_hosts:
           volume_backend_name: LVM_iSCSI
           iscsi_ip_address: "{{ cinder_storage_address }}"
   cinder02:
-    ip: 172.29.236.131
+    ip: 172.24.8.30
     container_vars:
       cinder_storage_availability_zone: nova
       cinder_default_availability_zone: nova
@@ -34,7 +34,7 @@ storage_hosts:
           volume_backend_name: LVM_iSCSI
           iscsi_ip_address: "{{ cinder_storage_address }}"
   cinder03:
-    ip: 172.29.236.132
+    ip: 172.24.8.31
     container_vars:
       cinder_storage_availability_zone: nova
       cinder_default_availability_zone: nova

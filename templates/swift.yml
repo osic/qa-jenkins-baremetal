@@ -8,11 +8,15 @@ global_overrides:
     part_power: 8
     mount_point: /srv/node
     drives:
-      - name: vdb
-      - name: vdc
-      - name: vdd
-      - name: vde
-      - name: vdf
+      - name: sdb
+      - name: sdc
+      - name: sdd
+      - name: sde
+      - name: sdf
+      - name: sdg
+      - name: sdh
+      - name: sdi
+      - name: sdj
     storage_policies:
       - policy:
           name: default
@@ -22,21 +26,21 @@ global_overrides:
 
 swift-proxy_hosts:
   infra01:
-    ip: 172.29.236.101
+    ip: 172.24.8.23
     container_vars:
       swift_proxy_vars:
         read_affinity: "r1=100"
         write_affinity: "r1"
         write_affinity_node_count: "2 * replicas"
   infra02:
-    ip: 172.29.236.102
+    ip: 172.24.8.24
     container_vars:
       swift_proxy_vars:
         read_affinity: "r2=100"
         write_affinity: "r2"
         write_affinity_node_count: "2 * replicas"
   infra03:
-    ip: 172.29.236.103
+    ip: 172.24.8.25
     container_vars:
       swift_proxy_vars:
         read_affinity: "r3=100"
@@ -46,21 +50,21 @@ swift-proxy_hosts:
 
 swift_hosts:
   swift01:
-    ip: 172.29.236.140
+    ip: 172.24.8.32
     container_vars:
       swift_vars:
         limit_container_types: swift
         zone: 0
         region: 1
   swift02:
-    ip: 172.29.236.141
+    ip: 172.24.8.33
     container_vars:
       swift_vars:
         limit_container_types: swift
         zone: 0
         region: 1
   swift03:
-    ip: 172.29.236.142
+    ip: 172.24.8.34
     container_vars:
       swift_vars:
         limit_container_types: swift
