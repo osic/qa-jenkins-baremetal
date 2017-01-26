@@ -14,7 +14,7 @@ pip install ansible==1.9.6
 pip install ansible
 
 ## Clone this repo to deployment host /root directory
-cd /root
+cd /root  
 git clone http://github.com/osic/qa-jenkins-baremetal
 
 ## Change into repo directory
