@@ -27,4 +27,4 @@ ansible-playbook provision.yml
 ansible-playbook configure.yml
 
 ## Prepare the deployment host to install openstack-ansible
-ansible-playbook stage.yml
+ansible-playbook stage.yml -e "openstack_release='stable/mitaka'"
