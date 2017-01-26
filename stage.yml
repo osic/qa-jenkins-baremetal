@@ -1,7 +1,7 @@
 ---
 
-- name: "Deploy OpenStack-Ansible"
-  hosts: localhost
+- name: "Stage deployer for OpenStack install"
+  hosts: deployer
   remote_user: root
   serial: 1
 
@@ -133,10 +133,10 @@
     - name: Wait for inventory to build
       pause: seconds=5
 
-    - name: Add utility containers to OnMetal hosts
+    - name: Add utility containers to deployer
       shell: "python /opt/openstack-ansible/scripts/inventory-manage.py -l|awk 'match($0, /(infra0._utility)/, m) { print $12 \" \" $2 \" \" m[1] }' >> /etc/hosts"
       tags:
-        - add-utility-to-onmetal
+        - add-utility-to-deployer
 
     - name: Create ansible symlink if it does not exist
       shell: "if ! [ -L /opt/ansible-runtime/bin/ansible ]; then ln -s /usr/local/bin/ansible /opt/ansible-runtime/bin/ansible; fi;"
