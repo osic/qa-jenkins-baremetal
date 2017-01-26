@@ -1,6 +1,6 @@
 ---
 - include: playbooks/pxeboot_servers.yml
-- include: playbooks/wait_for_ssh.yml
+- include: playbooks/wait-for-ssh.yml
 
 - name: add ssh fingerprints to deployment host
   hosts: deployer
