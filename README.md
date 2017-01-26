@@ -22,10 +22,10 @@ git clone http://github.com/osic/qa-jenkins-baremetal
 cd /root/qa-jenkins-baremetal
 
 ## Provision servers (does not include deployment host)
-ansible-playbook provision.yml
+ansible-playbook -i inventory provision.yml
 
 ## Configure servers (packages/networking/etc)
-ansible-playbook configure.yml
+ansible-playbook -i inventory configure.yml --ask-pass
 
 ## Prepare the deployment host to install openstack-ansible
-ansible-playbook stage.yml -e "openstack_release='stable/mitaka'"
+ansible-playbook -i inventory stage.yml -e "openstack_release='stable/mitaka'"
