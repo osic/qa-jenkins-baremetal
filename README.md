@@ -1,11 +1,11 @@
 # qa-jenkins-baremetal
 
 ## Required packages
-cd /root
-apt-get update -y
-apt-get install -y python-dev curl
-wget -k https://bootstrap.pypa.io/get-pip.py
-python get-pip.py
+cd /root  
+apt-get update -y  
+apt-get install -y python-dev curl  
+wget -k https://bootstrap.pypa.io/get-pip.py  
+python get-pip.py  
 
 #### <= Mitaka
 pip install ansible==1.9.6
