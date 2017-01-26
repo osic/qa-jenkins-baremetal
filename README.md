@@ -7,10 +7,11 @@ apt-get install -y python-dev curl
 wget -k https://bootstrap.pypa.io/get-pip.py  
 python get-pip.py  
 
-#### <= Mitaka
-pip install ansible==1.9.6
+#### openstack_release <= Mitaka
+Due to this bug - _https://github.com/ansible/ansible-modules-extras/issues/2042_  
+pip 'install' 'git+https://github.com/ansible/ansible@stable-1.9'
 
-#### >= Newton
+#### openstack_release >= Newton
 pip install ansible
 
 ## Clone this repo to deployment host /root directory
