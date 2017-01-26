@@ -1,0 +1,18 @@
+---
+- name: Wait for host SSH port 22 to be accessible
+  gather_facts: False
+  hosts: all:!deployer:!provisioner
+  tasks:
+    - name: "Wait for server to reboot"
+      pause: seconds=60
+
+    - name: "Check port 22 is open"
+      local_action:
+        module: wait_for
+        host: "{{ ansible_ssh_host }}"
+        port: 22
+        state: started
+      sudo: false
+
+    - name: "Give network more time"
+      pause: seconds=20

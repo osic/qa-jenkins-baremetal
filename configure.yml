@@ -1,0 +1,8 @@
+- include: playbooks/bootstrap.yml
+- include: playbooks/remove-lvs-nova00.yml
+- include: playbooks/remove-lvs-deleteme00.yml
+- include: playbooks/swift-disks-prepare.yml
+- include: playbooks/create-network-interfaces.yml
+- include: playbooks/update-kernel.yml
+- include: playbooks/reboot-server.yml
+- include: playbooks/wait-for-ssh.yml

@@ -1,0 +1,24 @@
+---
+- name: Create network interfaces file
+  hosts: 'all:!deployer:!provisioner'
+  remote_user: root
+  become: yes
+  vars_files:
+    - vars/vlan_network_mapping.yml
+
+  tasks:
+  - name: make host ip static
+    template:
+      src: templates/interfaces.cfg.j2
+      dest: /etc/network/interfaces
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Create os-refimpl-devices.cfg
+    template:
+      src: templates/openstack.cfg.j2
+      dest: /etc/network/interfaces.d/openstack.cfg
+      owner: root
+      group: root
+      mode: 0644

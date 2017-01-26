@@ -1,0 +1,13 @@
+---
+- include: playbooks/pxeboot_servers.yml
+- include: playbooks/wait_for_ssh.yml
+
+- name: add ssh fingerprints to deployment host
+  hosts: deployer
+  tasks:
+  - name:
+    shell: |
+      for i in $(cat /opt/osic-ref-impl/playbooks/inventory/static-inventory.yml | awk /ansible_ssh_host/ | cut -d'=' -f2); do
+        ssh-keygen -R $i
+        ssh-keyscan -H $i >> /root/.ssh/known_hosts
+      done

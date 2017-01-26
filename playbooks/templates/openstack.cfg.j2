@@ -1,0 +1,74 @@
+# VLANS
+# 502 - MANAGEMENT_NET - 172.24.8.0/22
+# 530 - STORAGE_NET    - 172.24.100.0/22
+# 531 - OVERLAY_NET    - 172.24.104.0/22
+# 532 - FLAT_NET       - 172.24.108.0/22
+
+
+# Container management VLAN interface
+iface bond0.{{ management_vlan }} inet manual
+vlan-raw-device bond0
+
+# Storage network VLAN interface (optional)
+iface bond0.{{ storage_vlan }} inet manual
+vlan-raw-device bond0
+
+# OpenStack Networking VXLAN (tunnel/overlay) VLAN interface
+iface bond1.{{ overlay_vlan }} inet manual
+vlan-raw-device bond1
+
+iface bond0.{{ flat_vlan }} inet manual
+vlan-raw-device bond0
+
+# Container management bridge
+auto br-mgmt
+iface br-mgmt inet static
+bridge_stp off
+bridge_waitport 10
+bridge_fd 0
+# Bridge port references tagged interface
+bridge_ports bond0.{{ management_vlan }}
+address {{ management_network.split('.')[0:3] | join('.')}}.{{ ansible_ssh_host.split('.')[-1] }}
+netmask 255.255.252.0
+gateway {{ management_network.split('.')[0:3] | join('.')}}.1
+dns-nameservers 8.8.8.8 8.8.4.4
+
+# Storage bridge (optional)
+auto br-storage
+iface br-storage inet static
+bridge_stp off
+bridge_waitport 10
+bridge_fd 0
+# Bridge port reference tagged interface
+bridge_ports bond0.{{ storage_vlan }}
+address {{ storage_network.split('.')[0:3] | join('.') }}.{{ ansible_ssh_host.split('.')[-1] }}
+netmask 255.255.252.0
+
+# OpenStack Networking VXLAN (tunnel/overlay) bridge
+auto br-vxlan
+iface br-vxlan inet static
+bridge_stp off
+bridge_waitport 10
+bridge_fd 0
+# Bridge port references tagged interface
+bridge_ports bond1.{{ overlay_vlan }}
+address {{ overlay_network.split('.')[0:3] | join('.') }}.{{ ansible_ssh_host.split('.')[-1] }}
+netmask 255.255.252.0
+
+# OpenStack Networking VLAN bridge
+auto br-vlan
+iface br-vlan inet static
+bridge_stp off
+bridge_waitport 10
+bridge_fd 0
+# Create veth pair, don't bomb if already exists
+#pre-up ip link add br-vlan-veth type veth peer name br-vlan-flat || true
+# Set both ends UP
+#pre-up ip link set br-vlan-veth up
+#pre-up ip link set br-vlan-flat up
+# Delete veth pair on DOWN
+#post-down ip link del br-vlan-veth || true
+#bridge_ports br-vlan-veth
+bridge_ports bond0.{{ flat_vlan }}
+address {{ flat_network.split('.')[0:3] | join('.') }}.{{ ansible_ssh_host.split('.')[-1] }}
+netmask 255.255.252.0

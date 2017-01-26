@@ -1,0 +1,29 @@
+---
+- include: pxeboot_servers.yml
+- hosts: all:!osic_container:!deploy
+  tasks:
+    - name: "Check port 22 is open"
+      local_action:
+        module: wait_for
+        host: "{{ ansible_ssh_host }}"
+        port: 22
+        state: started
+      sudo: false
+
+    - name: "Give SSH more time"
+      pause: seconds=20
+- name: add ssh fingerprints to deployment host
+  hosts: deploy
+  tasks:
+  - name: 
+    shell: |
+      for i in $(cat /opt/osic-ref-impl/playbooks/inventory/static-inventory.yml | awk /ansible_ssh_host/ | cut -d'=' -f2); do
+        ssh-keygen -R $i
+        ssh-keyscan -H $i >> /root/.ssh/known_hosts
+      done 
+- include: bootstrap.yml
+- include: remove-lvs-nova00.yml
+- include: remove-lvs-deleteme00.yml
+- include: update_kernel.yml
+- include: swift-disks-prepare.yml
+- include: create-network-interfaces.yml

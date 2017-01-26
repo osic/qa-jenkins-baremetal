@@ -1,0 +1,50 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# Physical interface 1
+auto p1p1
+iface p1p1 inet manual
+bond-master bond1
+bond-primary p1p1
+
+# Physical interface 2
+auto p1p2
+iface p1p2 inet manual
+bond-master bond0
+bond-primary p1p2
+
+# Physical interface 3
+auto p4p1
+iface p4p1 inet manual
+bond-master bond1
+
+# Physical interface 4
+auto p4p2
+iface p4p2 inet manual
+bond-master bond0
+
+# Bond interface 0 (physical interfaces 1 and 3)
+auto bond0
+iface bond0 inet manual
+bond-slaves p1p2 p4p2
+bond-mode active-backup
+bond-miimon 100
+bond-downdelay 200
+bond-updelay 200
+post-up /sbin/ip addr add 172.24.0.{{ ansible_ssh_host.split('.')[-1] }}/22 dev bond0
+post-down /sbin/ip addr del 172.24.0.{{ ansible_ssh_host.split('.')[-1] }}/22 dev bond0
+
+# Bond interface 1 (physical interfaces 2 and 4)
+auto bond1
+iface bond1 inet manual
+bond-slaves p1p1 p4p1
+bond-mode active-backup
+bond-miimon 100
+bond-downdelay 200
+bond-updelay 200
+
+source /etc/network/interfaces.d/*.cfg
