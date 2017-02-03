@@ -50,10 +50,10 @@ pip install ansible
 
 ## Clone this repo to deployment host /root directory
 cd /root  
-git clone http://github.com/osic/qa-jenkins-baremetal
+git clone http://github.com/osic/qe-jenkins-baremetal
 
 ## Change into repo directory
-cd /root/qa-jenkins-baremetal
+cd /root/qe-jenkins-baremetal
 
 ## Provision servers (does not include deployment host)
 ansible-playbook -f 22 -i inventory provision.yml
