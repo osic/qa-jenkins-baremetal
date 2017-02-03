@@ -1,4 +1,4 @@
-# qa-jenkins-baremetal
+# qe-jenkins-baremetal
 #Bare Metal Environment(BME)
 Currently implemented in Cloud5. This is a 22 node environment which uses bare metal servers for deploy of OpenStack via [OpenStack-Ansible](https://github.com/openstack/openstack-ansible).
 
