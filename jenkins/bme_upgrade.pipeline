@@ -17,11 +17,12 @@ stage('Pre-Deployment -- Load Libs'){
     node('bme-jenkins-slave-n01') {
         // Load the external functions using master since the git command
         // might not be available at the agent yet
-        fileLoader.withGit('https://github.com/dankolbrs/qa-jenkins-onmetal.git', 'master', null, '') {
+        fileLoader.withGit('https://github.com/osic/qe-jenkins-baremetal.git', 'master', null, '') {
             common = fileLoader.load('jenkins/common.groovy');
             osa = fileLoader.load('jenkins/osa_onmetal.functions.groovy');
             bme = fileLoader.load('jenkins/bme.functions.groovy');
         }
+        git 'https://github.com/osic/qe-jenkins-baremetal.git'
     }
 
     node('elasticsearch') {
@@ -42,8 +43,7 @@ stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
                 echo "[deploy_node]" > hosts
                 echo "intelci-node ansible_ssh_host=172.24.0.21 ansible_ssh_user=root" >> hosts
             """
-            echo 'Configure SSH keys'
-            bme.setup_ssh_pub_key()
+
         }
     }
 }
@@ -51,15 +51,15 @@ stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
 stage('Deployment -- Rebuild Environment if selected'){
     node('bme-jenkins-slave-n01'){
         // env prep
-        if (${rebuild_environment} == false && ${redeploy_openstack == false}) {
+        if (rebuild_environment && !redeploy_openstack) {
             stage('Skipping rebuild'){
                 echo 'Skipping rebuild environment and redeploy OpenStack.'
             }
-        } else if (${rebuild_environment} == true && ${redeploy_openstack == true}) {
+        } else if (rebuild_environment && redeploy_openstack) {
             stage('Rebuild environment & redeploy OpenStack.') {
                 bme.rebuild_environment(true, true)
             }
-        } else if (${rebuild_environment} == false && ${redeploy_openstack == true}) {
+        } else if ( !rebuild_environment && redeploy_openstack) {
             stage('Skip rebuild environment, redeploy OpenStack'){
                 bme.rebuild_environment(false, true)
             }
@@ -70,6 +70,7 @@ stage('Deployment -- Rebuild Environment if selected'){
 stage('Post-Deployment Validation'){
     node('bme-jenkins-slave-n01'){
         stage('Install and Configure tempest'){
+            bme.setup_ssh_pub_key()
             bme.install_tempest_tests(controller_name)
             bme.configure_tempest(controller_name)
         }

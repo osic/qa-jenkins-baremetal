@@ -24,8 +24,7 @@ def setup_ssh_pub_key() {
             ssh -o StrictHostKeyChecking=no root@${host_ip} '''
                 PUB_KEY=\$(cat /root/temp_ssh_key.pub)
                 echo \${PUB_KEY} >> /root/.ssh/authorized_keys
-                OSA_DIR=\$(find / -maxdepth 4 -type d -name \"openstack-ansible\")
-                cd \$OSA_DIR/playbooks
+                cd /opt/openstack-ansible/playbooks
                 ansible utility_all -i inventory -m shell -a \"echo \${PUB_KEY} >> /root/.ssh/authorized_keys\"
             '''
         """
@@ -335,11 +334,11 @@ def stop_api_uptime_tests(controller_name='controller01') {
     """
 }
 
-def install_tempest_tests() {
+def install_tempest_tests(controller_name='controller01') {
     String host_ip = get_onmetal_ip()
 
     sh """
-        ssh -o StringHostKeyChecking=no root@{host_ip} '''
+        ssh -o StrictHostKeyChecking=no root@${host_ip} '''
         cd /opt/openstack-ansible/playbooks
         openstack-ansible os-tempest-install.yml
         '''
@@ -477,14 +476,30 @@ def rebuild_environment(full=null, redeploy=null) {
     // redeploy
     //    true  - redeploy openstack
     //    false - no redeploy
+    String host_ip = get_onmetal_ip()
 
     if (full == null || redeploy == null){
         error "Requires specifying rebuild type"
     }
-    String extra_vars = ""
-    extra_vars = "-e full=${full} -e redeploy=${redeploy}"
-    echo "Rebuilding OSA environment with ${extra_vars}"
-    ansiblePlaybook extras: "${extra_vars}", inventory: "hosts", playbook: 'bme_rebuild.yaml', sudoUser: null
+
+    if (full){
+        sh """
+            ssh -o StrictHostKeyChecking=no root@${host_ip} '''
+                cd /root
+                bash rebuild_environment.sh
+            '''
+        """
+    }
+    if (redeploy){
+      sh """
+          ssh -o StrictHostKeyChecking=no root@${host_ip} '''
+              rm -f /etc/openstack_deploy/ansible_facts/*
+              rm -f /etc/openstack_deploy/openstack-inventory.json
+              cd /opt/openstack-ansible/playbooks
+              openstack-ansible setup-everything.yml --forks 3
+          '''
+      """
+    }
 }
 
 def bash_upgrade_openstack(release='master', retries=2, fake_results=false) {
