@@ -1,10 +1,11 @@
 #!/usr/bin/env groovy
 
-def get_onmetal_ip() {
+def get_deploy_node_ip() {
     // Get the onmetal host IP address
     if (fileExists('hosts')) {
         String hosts = readFile("hosts")
-        String ip = hosts.substring(hosts.indexOf('=')+1).replaceAll("[\n\r]", "")
+        String ip_match = /ansible_ssh_host=(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
+        String ip = (hosts=~ip_match)[0][1]
         return (ip)
     } else {
 
@@ -13,7 +14,7 @@ def get_onmetal_ip() {
 }
 
 def setup_ssh_pub_key() {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
 
     sh """
         scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa.pub root@${host_ip}:/root/temp_ssh_key.pub
@@ -36,7 +37,7 @@ def setup_ssh_pub_key() {
 
 def get_controller_utility_container_ip(controller_name='controller01') {
     // Rather than use all containers, find just one to operate tests
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     upgrade_output = sh returnStdout: true, script: """
         ssh -o StrictHostKeyChecking=no root@${host_ip} '''
             cd /etc/openstack_deploy
@@ -52,7 +53,7 @@ def get_controller_utility_container_ip(controller_name='controller01') {
 }
 
 def get_tempest_dir(controller_name='controller01') {
-  String host_ip = get_onmetal_ip()
+  String host_ip = get_deploy_node_ip()
   String container_ip = get_controller_utility_container_ip(controller_name)
   String tempest_dir = ""
   try {
@@ -71,7 +72,7 @@ def get_tempest_dir(controller_name='controller01') {
 }
 
 def configure_tempest(controller_name='controller01'){
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = ""
 
@@ -125,7 +126,7 @@ def configure_tempest(controller_name='controller01'){
 }
 
 def run_tempest_tests(controller_name='controller01', regex='smoke', results_file = null, elasticsearch_ip = null){
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     def tempest_output, failures
 
@@ -161,7 +162,7 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
 }
 
 def install_persistent_resources_tests(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
     // Install Persistent Resources tests on the utility container on ${controller}
@@ -178,7 +179,7 @@ def install_persistent_resources_tests(controller_name='controller01') {
 }
 
 def install_persistent_resources_tests_parse(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
     // Install Persistent Resources tests parse on the utility container on ${controller}
@@ -195,7 +196,7 @@ def install_persistent_resources_tests_parse(controller_name='controller01') {
 }
 
 def run_persistent_resources_tests(controller_name='controller01', action='verify', results_file=null){
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
 
@@ -217,7 +218,7 @@ def run_persistent_resources_tests(controller_name='controller01', action='verif
 }
 
 def parse_persistent_resources_tests(controller_name='controller01'){
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
 
@@ -233,7 +234,7 @@ def parse_persistent_resources_tests(controller_name='controller01'){
 }
 
 def install_during_upgrade_tests(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
     // Install during upgrade tests on the utility container on ${controller}
@@ -251,7 +252,7 @@ def install_during_upgrade_tests(controller_name='controller01') {
 }
 
 def start_during_upgrade_test(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
     // Start during upgrade tests on the utility container on ${controller}
@@ -266,7 +267,7 @@ def start_during_upgrade_test(controller_name='controller01') {
 }
 
 def stop_during_upgrade_test(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     // Stop during upgrade tests on the utility container on ${controller}
     sh """
@@ -278,7 +279,7 @@ def stop_during_upgrade_test(controller_name='controller01') {
 }
 
 def install_api_uptime_tests(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
     // install api uptime tests on utility container on ${controller}
@@ -296,7 +297,7 @@ def install_api_uptime_tests(controller_name='controller01') {
 }
 
 def start_api_uptime_tests(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
     // start api uptime tests on the utility container on ${controller}
@@ -314,7 +315,7 @@ def start_api_uptime_tests(controller_name='controller01') {
 }
 
 def stop_api_uptime_tests(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     String tempest_dir = get_tempest_dir(controller_name)
     // Stop api uptime tests on the utility container on ${controller}
@@ -335,7 +336,7 @@ def stop_api_uptime_tests(controller_name='controller01') {
 }
 
 def install_tempest_tests(controller_name='controller01') {
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
 
     sh """
         ssh -o StrictHostKeyChecking=no root@${host_ip} '''
@@ -398,7 +399,7 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
 }
 
 def cleanup_test_results(controller_name='controller01') {
-  String host_ip = get_onmetal_ip()
+  String host_ip = get_deploy_node_ip()
   String container_ip = get_controller_utility_container_ip(controller_name)
   tempest_dir = get_tempest_dir(controller_name)
 
@@ -468,38 +469,15 @@ def disconnect_vpn(){
   """
 }
 
-def rebuild_environment(full=null, redeploy=null) {
-    // ***Requires Params***
-    // full:
-    //    true  - rebuild on-metal environment
-    //    false - remove existing openstack containers and configuration only
-    // redeploy
-    //    true  - redeploy openstack
-    //    false - no redeploy
-    String host_ip = get_onmetal_ip()
+def rebuild_environment() {
+    String host_ip = get_deploy_node_ip()
 
-    if (full == null || redeploy == null){
-        error "Requires specifying rebuild type"
-    }
-
-    if (full){
-        sh """
-            ssh -o StrictHostKeyChecking=no root@${host_ip} '''
-                cd /root
-                bash rebuild_environment.sh
-            '''
-        """
-    }
-    if (redeploy){
-      sh """
-          ssh -o StrictHostKeyChecking=no root@${host_ip} '''
-              rm -f /etc/openstack_deploy/ansible_facts/*
-              rm -f /etc/openstack_deploy/openstack-inventory.json
-              cd /opt/openstack-ansible/playbooks
-              openstack-ansible setup-everything.yml --forks 3
-          '''
-      """
-    }
+    sh """
+        ssh -o StrictHostKeyChecking=no root@${host_ip} '''
+            cd /root
+            bash rebuild_environment.sh
+        '''
+    """
 }
 
 def bash_upgrade_openstack(release='master', retries=2, fake_results=false) {
@@ -508,7 +486,7 @@ def bash_upgrade_openstack(release='master', retries=2, fake_results=false) {
     // retries - number of times to rerun
     // fake_results calls different method to return expected fails for testing
 
-    String host_ip = get_onmetal_ip()
+    String host_ip = get_deploy_node_ip()
     String upgrade_output = ""
 
     //call upgrade, fake_results allows testing while environment not usable

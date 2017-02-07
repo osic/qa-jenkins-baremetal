@@ -8,7 +8,6 @@ String onmetal_ip, elasticsearch_ip, elasticsearch_pkey
 // will fail:
 //  - to_release
 //  - rebuild_environment
-//  - redeploy_openstack
 //  - controller_name (i.e. controller01) - determines location of utility container to run tests
 
 // *******************************
@@ -51,17 +50,13 @@ stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
 
 node('bme-jenkins-slave-n01'){
     // env prep
-    if (rebuild_environment && !redeploy_openstack) {
+    if (!rebuild_environment) {
         stage('Skipping rebuild'){
             echo 'Skipping rebuild environment and redeploy OpenStack.'
         }
-    } else if (rebuild_environment && redeploy_openstack) {
-        stage('Rebuild environment & redeploy OpenStack.') {
-            bme.rebuild_environment(true, true)
-        }
-    } else if ( !rebuild_environment && redeploy_openstack) {
-        stage('Skip rebuild environment, redeploy OpenStack'){
-            bme.rebuild_environment(false, true)
+    } else {
+        stage('Rebuilding Environment and redeploying openstack'){
+            bme.rebuild_environment()
         }
     }
 }
