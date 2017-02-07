@@ -50,14 +50,14 @@ stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
 
 node('bme-jenkins-slave-n01'){
     // env prep
-    if (!rebuild_environment) {
-        stage('Skipping rebuild'){
-            echo 'Skipping rebuild environment and redeploy OpenStack.'
-        }
-    } else {
+    if (rebuild_environment == "true"){
         stage('Rebuilding Environment and redeploying openstack'){
             bme.rebuild_environment()
         }
+    } else {
+      stage('Skipping rebuild'){
+        echo 'Skipping rebuild environment and redeploy OpenStack.'
+      }
     }
 }
 
