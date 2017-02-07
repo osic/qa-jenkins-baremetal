@@ -48,35 +48,34 @@ stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
     }
 }
 
-stage('Deployment -- Rebuild Environment if selected'){
-    node('bme-jenkins-slave-n01'){
-        // env prep
-        if (rebuild_environment && !redeploy_openstack) {
-            stage('Skipping rebuild'){
-                echo 'Skipping rebuild environment and redeploy OpenStack.'
-            }
-        } else if (rebuild_environment && redeploy_openstack) {
-            stage('Rebuild environment & redeploy OpenStack.') {
-                bme.rebuild_environment(true, true)
-            }
-        } else if ( !rebuild_environment && redeploy_openstack) {
-            stage('Skip rebuild environment, redeploy OpenStack'){
-                bme.rebuild_environment(false, true)
-            }
+
+node('bme-jenkins-slave-n01'){
+    // env prep
+    if (rebuild_environment && !redeploy_openstack) {
+        stage('Skipping rebuild'){
+            echo 'Skipping rebuild environment and redeploy OpenStack.'
+        }
+    } else if (rebuild_environment && redeploy_openstack) {
+        stage('Rebuild environment & redeploy OpenStack.') {
+            bme.rebuild_environment(true, true)
+        }
+    } else if ( !rebuild_environment && redeploy_openstack) {
+        stage('Skip rebuild environment, redeploy OpenStack'){
+            bme.rebuild_environment(false, true)
         }
     }
 }
 
-stage('Post-Deployment Validation'){
-    node('bme-jenkins-slave-n01'){
-        stage('Install and Configure tempest'){
-            bme.setup_ssh_pub_key()
-            bme.install_tempest_tests(controller_name)
-            bme.configure_tempest(controller_name)
-        }
-        stage('Run Tempest Smoke Tests') {
-            bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip)
-        }
+
+
+node('bme-jenkins-slave-n01'){
+    stage('Install and Configure tempest'){
+        bme.setup_ssh_pub_key()
+        bme.install_tempest_tests(controller_name)
+        bme.configure_tempest(controller_name)
+    }
+    stage('Run Tempest Smoke Tests') {
+        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip)
     }
 }
 
@@ -90,24 +89,23 @@ stage('Pre-Upgrade Configuration'){
     }
 }
 
-stage('Upgrade Openstack to ${to_release}'){
-    node('bme-jenkins-slave-n01'){
-        stage('Start Upgrade tests'){
-            bme.start_api_uptime_tests(controller_name)
-            bme.start_during_upgrade_tests(controller_name)
-        }
-        stage('Run Upgrade'){
-           bme.bash_upgrade_openstack(${to_release}, 2, false)
-        }
-        stage('Stop Upgrade tests'){
-            bme.stop_api_uptime_tests(controller_name)
-            bme.stop_during_upgrade_test(controller_name)
-        }
-        stage('Run persistent resources tests'){
-            bme.run_persistent_resources_tests(controller_name, 'verify', null)
-            bme.parse_persistent_resources_tests(controller_name)
-            bme.run_persistent_resources_tests(controller_name, 'clean', null)
-        }
+
+node('bme-jenkins-slave-n01'){
+    stage('Start Upgrade tests'){
+        bme.start_api_uptime_tests(controller_name)
+        bme.start_during_upgrade_tests(controller_name)
+    }
+    stage('Run Upgrade'){
+       bme.bash_upgrade_openstack(${to_release}, 2, false)
+    }
+    stage('Stop Upgrade tests'){
+        bme.stop_api_uptime_tests(controller_name)
+        bme.stop_during_upgrade_test(controller_name)
+    }
+    stage('Run persistent resources tests'){
+        bme.run_persistent_resources_tests(controller_name, 'verify', null)
+        bme.parse_persistent_resources_tests(controller_name)
+        bme.run_persistent_resources_tests(controller_name, 'clean', null)
     }
 }
 
