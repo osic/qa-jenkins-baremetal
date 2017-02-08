@@ -145,18 +145,17 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
             cp .testrepository/\$stream_id \$TEMPEST_DIR/subunit/smoke/${results_file}
         '''
     """
-    println tempest_output
     if (tempest_output.contains('- Failed:') == true) {
         failures = tempest_output.substring(tempest_output.indexOf('- Failed:') + 10)
-        failures = failures.substring(0,failures.indexOf(newline)).toInteger()
+        failures = failures.substring(0,failures.indexOf('\n')).toInteger()
         if (failures > 1) {
-            println 'Parsing failed smoke'
+            echo 'Parsing failed smoke'
                 if (elasticsearch_ip != null) {
                     aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip)
                 }
             error "${failures} tests from the Tempest smoke tests failed, stopping the pipeline."
         } else {
-            println 'The Tempest smoke tests were successfull.'
+            echo 'The Tempest smoke tests were successfull.'
         }
     } else {
         error 'There was an error running the smoke tests, stopping the pipeline.'
