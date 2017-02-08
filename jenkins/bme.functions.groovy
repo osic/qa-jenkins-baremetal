@@ -38,8 +38,9 @@ def setup_ssh_pub_key() {
 def get_controller_utility_container_ip(controller_name='controller01') {
     // Rather than use all containers, find just one to operate tests
     String host_ip = get_deploy_node_ip()
-    upgrade_output = sh returnStdout: true, script: """
+    ip_output = sh returnStdout: true, script: """
         ssh -o StrictHostKeyChecking=no root@${host_ip} '''
+            set -x
             cd /etc/openstack_deploy
             CONTAINER=\$(cat openstack_inventory.json | jq \".utility.hosts\" | grep \"${controller_name}_utility\")
             CONTAINER=\$(echo \$CONTAINER | sed s/\\\"//g | sed s/\\ //g)
@@ -48,7 +49,8 @@ def get_controller_utility_container_ip(controller_name='controller01') {
         '''
     """
     // quote in a comment to fix editor syntax highlighting '
-    String container_ip = upgrade_output.substring(upgrade_output.indexOf('=') +1).trim()
+    echo ip_output
+    String container_ip = ip_output.substring(ip_output.indexOf('=') +1).trim()
     return (container_ip)
 }
 
