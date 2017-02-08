@@ -263,6 +263,7 @@ def start_during_upgrade_test(controller_name='controller01') {
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
+            cd \$TEMPEST_DIR
             cd rolling-upgrades-during-test
             python call_test.py --daemon --output-file \$TEMPEST_DIR/output
         ''' &
