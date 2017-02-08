@@ -61,7 +61,7 @@ def get_tempest_dir(controller_name='controller01') {
   try {
       tempest_dir = sh returnStdout: true, script: """
           ssh -o StrictHostKeyChecking=no\
-          -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
               TEMPEST_DIR=\$(find / -maxdepth 4 -type d -name "tempest_untagged")
               echo \$TEMPEST_DIR
           '''
@@ -82,7 +82,7 @@ def configure_tempest(controller_name='controller01'){
 
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             # Make sure tempest is installed
@@ -96,7 +96,7 @@ def configure_tempest(controller_name='controller01'){
 
     results = sh returnStdout: true, script: """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             # Make sure etc/tempest.conf exists
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
@@ -136,7 +136,7 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
 
     tempest_output = sh returnStdout: true, script: """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             stream_id=\$(cat .testrepository/next-stream)
@@ -171,7 +171,7 @@ def install_persistent_resources_tests(controller_name='controller01') {
     echo 'Installing Persistent Resources Tempest Plugin on the onMetal host'
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             rm -rf \$TEMPEST_DIR/persistent-resources-tests
             git clone https://github.com/osic/persistent-resources-tests.git \$TEMPEST_DIR/persistent-resources-tests
@@ -188,7 +188,7 @@ def install_persistent_resources_tests_parse(controller_name='controller01') {
     echo 'Installing Persistent Resources Tempest Plugin'
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             rm -rf \$TEMPEST_DIR/persistent-resources-tests-parse
             git clone https://github.com/osic/persistent-resources-tests-parse.git \$TEMPEST_DIR/persistent-resources-tests-parse
@@ -208,7 +208,7 @@ def run_persistent_resources_tests(controller_name='controller01', action='verif
 
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             stream_id=\$(cat .testrepository/next-stream)
@@ -226,7 +226,7 @@ def parse_persistent_resources_tests(controller_name='controller01'){
 
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR/subunit/persistent_resources/
             resource-parse --u . > \$TEMPEST_DIR/output/persistent_resource.txt
@@ -243,7 +243,7 @@ def install_during_upgrade_tests(controller_name='controller01') {
     echo 'Installing during upgrade test on ${controller}_utility container'
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             mkdir -p \$TEMPEST_DIR/output
             git clone https://github.com/osic/rolling-upgrades-during-test
@@ -260,7 +260,7 @@ def start_during_upgrade_test(controller_name='controller01') {
     // Start during upgrade tests on the utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd rolling-upgrades-during-test
             python call_test.py --daemon --output-file \$TEMPEST_DIR/output
@@ -274,7 +274,7 @@ def stop_during_upgrade_test(controller_name='controller01') {
     // Stop during upgrade tests on the utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             touch /usr/during.uptime.stop
         '''
     """
@@ -287,7 +287,7 @@ def install_api_uptime_tests(controller_name='controller01') {
     // install api uptime tests on utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             mkdir -p \$TEMPEST_DIR/output
             rm -rf \$TEMPEST_DIR/api_uptime
@@ -305,7 +305,7 @@ def start_api_uptime_tests(controller_name='controller01') {
     // start api uptime tests on the utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             mkdir -p \$TEMPEST_DIR/output
             rm -f /usr/api.uptime.stop
@@ -323,7 +323,7 @@ def stop_api_uptime_tests(controller_name='controller01') {
     // Stop api uptime tests on the utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             touch /usr/api.uptime.stop
 
@@ -355,7 +355,7 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
     try {
         sh """
             scp -o StrictHostKeyChecking=no\
-            -o ProxyCommand='ssh -W %h:%p ${host_ip}'\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
             -r root@${container_ip}:${tempest_dir}/output .
 
             scp -o StrictHostKeyChecking=no\
@@ -369,7 +369,7 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
     try {
         sh """
             scp -o StrictHostKeyChecking=no\
-            -o ProxyCommand='ssh -W %h:%p ${host_ip}'\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
             -r root@${container_ip}:${tempest_dir}/subunit .
 
             scp -o StrictHostKeyChecking=no\
@@ -408,7 +408,7 @@ def cleanup_test_results(controller_name='controller01') {
   // Clean up existing tests results
   sh """
       ssh -o StrictHostKeyChecking=no\
-      -o ProxyCommand='ssh -W %h:%p ${host_ip}' root@${container_ip} '''
+      -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
           find ${tempest_dir}/subunit ! -name '.*' ! -type d -exec rm -- {} + || echo "No subunit directory found."
           find ${tempest_dir}/output ! -name '.*' ! -type d -exec rm -- {} + || echo "No output directory found."
       '''
