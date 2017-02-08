@@ -88,7 +88,7 @@ stage('Pre-Upgrade Configuration'){
 node('bme-jenkins-slave-n01'){
     stage('Start Upgrade tests'){
         bme.start_api_uptime_tests(controller_name)
-        bme.start_during_upgrade_tests(controller_name)
+        bme.start_during_upgrade_test(controller_name)
     }
     stage('Run Upgrade'){
        bme.bash_upgrade_openstack(${to_release}, 2, false)
