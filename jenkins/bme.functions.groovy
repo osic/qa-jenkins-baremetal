@@ -43,7 +43,7 @@ def get_controller_utility_container_ip(controller_name='controller01') {
             set -x
             cd /etc/openstack_deploy
             CONTAINER=\$(cat openstack_inventory.json | jq \".utility.hosts\" | grep \"${controller_name}_utility\")
-            CONTAINER=\$(echo \$CONTAINER | sed s/\\\"//g | sed s/\\ //g)
+            CONTAINER=\$(echo \$CONTAINER | sed s/\\\"//g | sed s/\\ //g | sed s/,//g )
             IP=\$(cat openstack_inventory.json | jq "._meta.hostvars[\\\""\$CONTAINER"\\\"].ansible_ssh_host" -r)
             echo "IP=\${IP}"
         '''
