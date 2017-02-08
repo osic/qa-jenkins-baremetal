@@ -245,6 +245,8 @@ def install_during_upgrade_tests(controller_name='controller01') {
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             mkdir -p \$TEMPEST_DIR/output
+            cd \$TEMPEST_DIR
+            rm -rf \$TEMPEST_DIR/rolling-upgrades-during-test
             git clone https://github.com/osic/rolling-upgrades-during-test
             cd rolling-upgrades-during-test
             pip install -r requirements.txt
