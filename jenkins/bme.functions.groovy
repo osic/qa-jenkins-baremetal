@@ -563,8 +563,8 @@ def run_upgrade_return_results(release="master", host_ip="127.0.0.1"){
         cd /opt/openstack-ansible
         git checkout ${release}
         git pull
-        LATEST_TAG=\$(git describe --abbrev=0 --tags)
-        git checkout \${LATEST_TAG}
+        #LATEST_TAG=\$(git describe --abbrev=0 --tags)
+        #git checkout \${LATEST_TAG}
         export TERM=xterm
         export I_REALLY_KNOW_WHAT_I_AM_DOING=true
         echo "YES" | bash scripts/run-upgrade.sh 2>&1 || echo "Failed Upgrade"
