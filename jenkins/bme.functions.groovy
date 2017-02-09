@@ -501,6 +501,11 @@ def bash_upgrade_openstack(release='master', retries=2, fake_results=false) {
         upgrade_output = run_upgrade_return_results(release, host_ip)
     }
     //take upgrade_output, find out if it's got a failure in it
+    echo "Echoing Upgrade Results"
+    echo "-----------------------"
+    echo upgrade_output
+    echo "-----------------------"
+    
     String failure_output = parse_upgrade_results_for_failure(upgrade_output)
 
     if (failure_output.length() > 0) {
