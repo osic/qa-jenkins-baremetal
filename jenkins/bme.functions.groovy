@@ -522,6 +522,10 @@ def bash_upgrade_openstack(release='master', retries=2, fake_results=false) {
             }
         }
     }
+    echo "Echoing Upgrade Results"
+    echo "-----------------------"
+    echo upgrade_output
+    echo "-----------------------"
 }
 
 def fake_run_upgrade_return_results(release='master', host_ip="127.0.0.1"){
@@ -617,9 +621,7 @@ def parse_upgrade_results_for_failure(upgrade_output = null){
 
 }
 
-def aggregate_results(host_ip, controller_name='controller01') {
-   String container_ip = get_controller_utility_container_ip(controller_name)
-   String tempest_dir = get_tempest_dir(controller_name)
+def aggregate_results(host_ip, container_ip, tempest_dir) {
    try {
        sh """
            scp -o StrictHostKeyChecking=no\
