@@ -617,6 +617,38 @@ def parse_upgrade_results_for_failure(upgrade_output = null){
 
 }
 
+def aggregate_results(host_ip, controller_name='controller01') {
+   String container_ip = get_controller_utility_container_ip(controller_name)
+   String tempest_dir = get_tempest_dir(controller_name)
+   try {
+       sh """
+           scp -o StrictHostKeyChecking=no\
+           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+           -r root@${container_ip}:${tempest_dir}/output .
+
+           scp -o StrictHostKeyChecking=no\
+           -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/
+       """
+   } catch(err) {
+       echo "Error moving output directory"
+       echo err.message
+   }
+
+   try {
+       sh """
+           scp -o StrictHostKeyChecking=no\
+           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+           -r root@${container_ip}:${tempest_dir}/subunit .
+
+           scp -o StrictHostKeyChecking=no\
+           -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/
+       """
+   } catch(err) {
+       echo "No subunit directory found"
+       echo err.message
+   }
+}
+
 def upgrade_openstack(release = 'master') {
 
     try {

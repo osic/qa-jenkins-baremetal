@@ -117,7 +117,7 @@ stage('Post-Upgrade -- Reporting'){
     }
     node('elasticsearch'){
         osa.install_parser()
-        osa.aggregate_results(deploy_node_ip)
+        bme.aggregate_results(deploy_node_ip, controller_name)
         osa.parse_results()
     }
 }
