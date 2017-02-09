@@ -265,8 +265,8 @@ def start_during_upgrade_test(controller_name='controller01') {
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             cd rolling-upgrades-during-test
-            python call_test.py --daemon --output-file \$TEMPEST_DIR/output &
-        '''
+            python call_test.py --daemon --output-file \$TEMPEST_DIR/output
+        ''' &
     """
 }
 
@@ -313,8 +313,8 @@ def start_api_uptime_tests(controller_name='controller01') {
             rm -f /usr/api.uptime.stop
             cd \$TEMPEST_DIR/api_uptime/api_uptime
             python call_test.py --verbose --daemon --services nova,swift\
-             --output-file \$TEMPEST_DIR/output/api.uptime.out &
-        '''
+             --output-file \$TEMPEST_DIR/output/api.uptime.out
+        ''' &
     """
 }
 
