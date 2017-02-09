@@ -505,7 +505,7 @@ def bash_upgrade_openstack(release='master', retries=2, fake_results=false) {
     echo "-----------------------"
     echo upgrade_output
     echo "-----------------------"
-    
+
     String failure_output = parse_upgrade_results_for_failure(upgrade_output)
 
     if (failure_output.length() > 0) {
@@ -628,6 +628,7 @@ def parse_upgrade_results_for_failure(upgrade_output = null){
 def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir) {
    try {
        sh """
+           set -x
            scp -o StrictHostKeyChecking=no\
            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
            -r root@${container_ip}:${tempest_dir}/output .
@@ -642,6 +643,7 @@ def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir) {
 
    try {
        sh """
+           set -x
            scp -o StrictHostKeyChecking=no\
            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
            -r root@${container_ip}:${tempest_dir}/subunit .
