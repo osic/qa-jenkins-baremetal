@@ -567,7 +567,7 @@ def run_upgrade_return_results(release="master", host_ip="127.0.0.1"){
         git checkout \${LATEST_TAG}
         export TERM=xterm
         export I_REALLY_KNOW_WHAT_I_AM_DOING=true
-        bash scripts/run-upgrade.sh 2>&1 || echo "Failed Upgrade"
+        echo "YES" | bash scripts/run-upgrade.sh 2>&1 || echo "Failed Upgrade"
         '''
     """
     return upgrade_output
