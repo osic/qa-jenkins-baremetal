@@ -620,7 +620,7 @@ def parse_upgrade_results_for_failure(upgrade_output = null){
 
 }
 
-def aggregate_results(host_ip, container_ip, tempest_dir) {
+def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir) {
    try {
        sh """
            scp -o StrictHostKeyChecking=no\
