@@ -2,7 +2,7 @@
 
 def osa, common, bme
 String workspace_dir
-String onmetal_ip, elasticsearch_ip, elasticsearch_pkey
+String deploy_node_ip, elasticsearch_ip, elasticsearch_pkey
 
 // Jenkins must provide these variables as parameters or the build
 // will fail:
@@ -42,8 +42,8 @@ stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
                 echo "[deploy_node]" > hosts
                 echo "intelci-node ansible_ssh_host=172.24.0.21 ansible_ssh_user=root" >> hosts
             """
-
         }
+        deploy_node_ip = bme.get_deploy_node_ip()
     }
 }
 
@@ -117,7 +117,7 @@ stage('Post-Upgrade -- Reporting'){
     }
     node('elasticsearch'){
         osa.install_parser()
-        osa.aggregate_results(onmetal_ip)
+        osa.aggregate_results(deploy_node_ip)
         osa.parse_results()
     }
 }
