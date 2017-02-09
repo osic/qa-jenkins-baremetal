@@ -555,6 +555,7 @@ def run_upgrade_return_results(release="master", host_ip="127.0.0.1"){
 
     upgrade_output = sh returnStdout: true, script: """
         ssh -o StrictHostKeyChecking=no root@${host_ip} '''
+        set -x
         cd /opt/openstack-ansible
         git checkout ${release}
         git pull
