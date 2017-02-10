@@ -76,6 +76,7 @@ def get_tempest_dir(controller_name='controller01') {
 def configure_tempest(controller_name='controller01'){
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
+    String tempest_dir = get_tempest_dir(controller_name)
 
     sh """
         ssh -o StrictHostKeyChecking=no\
