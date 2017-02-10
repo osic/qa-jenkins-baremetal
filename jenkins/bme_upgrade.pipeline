@@ -108,6 +108,7 @@ node('bme-jenkins-slave-n01'){
 
 stage('Post-Upgrade -- Validate Deploy'){
     node('bme-jenkins-slave-n01'){
+        bme.configure_tempest(controller_name)
         bme.install_tempest_tests(controller_name)
         bme.run_tempest_tests(controller_name, 'smoke', 'after_upgrade', elasticsearch_ip)
     }
