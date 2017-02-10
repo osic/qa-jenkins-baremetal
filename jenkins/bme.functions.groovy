@@ -84,11 +84,9 @@ def configure_tempest(controller_name='controller01'){
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             # Make sure tempest is installed
-            if [[ -z \$(which ostestr 2>/dev/null) ]]; then
-                pip install .
-                testr init
-                mkdir subunit || echo "subunit directory exists"
-            fi
+            pip install .
+            testr init || echo "already configured"
+            mkdir subunit || echo "subunit directory exists"
         '''
     """
 
