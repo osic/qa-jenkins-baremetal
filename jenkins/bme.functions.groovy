@@ -254,7 +254,7 @@ def start_during_upgrade_test(controller_name='controller01', tempest_dir=null) 
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             cd rolling-upgrades-during-test
-            python call_test.py --daemon --output-file \$TEMPEST_DIR/output
+            python call_test.py --daemon --output-file \$TEMPEST_DIR/output/during.uptime.out
         ''' &
     """
 }
@@ -281,7 +281,7 @@ def install_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
             TEMPEST_DIR=${tempest_dir}
             mkdir -p \$TEMPEST_DIR/output
             rm -rf \$TEMPEST_DIR/api_uptime
-            git clone https://github.com/osic/api_uptime.git \$TEMPEST_DIR/api_uptime
+            git clone https://github.com/osic/api_uptime.git \$TEMPEST_DIR/api_uptime/api.uptime.out
             cd \$TEMPEST_DIR/api_uptime
             pip install --upgrade -r requirements.txt
         '''
