@@ -62,7 +62,7 @@ def get_tempest_dir(controller_name='controller01') {
       tempest_dir = sh returnStdout: true, script: """
           ssh -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
-              TEMPEST_DIR=\$(find / -maxdepth 4 -type d -name "tempest*untagged")
+              TEMPEST_DIR=\$(find / -maxdepth 4 -type d -name "tempest*untagged" | head -1)
               echo \$TEMPEST_DIR
           '''
       """
