@@ -124,9 +124,11 @@ def configure_tempest(controller_name='controller01'){
     }
 }
 
-def run_tempest_tests(controller_name='controller01', regex='smoke', results_file = null, elasticsearch_ip = null, tempest_dir=null){
+def run_tempest_tests(controller_name='controller01', regex='smoke', results_file = null, elasticsearch_ip = null){
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
+
+    String tempest_dir = get_tempest_dir(controller_name)
     def failures
 
     tempest_output = sh returnStdout: true, script: """
@@ -254,7 +256,7 @@ def start_during_upgrade_test(controller_name='controller01', tempest_dir=null) 
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             cd rolling-upgrades-during-test
-            python call_test.py --daemon --output-file \$TEMPEST_DIR/output
+            python call_test.py --daemon --output-file \$TEMPEST_DIR/output/during.uptime.out
         ''' &
     """
 }
