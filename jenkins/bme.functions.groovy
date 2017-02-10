@@ -356,9 +356,10 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
 
     try {
         sh """
+            TEMPEST_DIR=${tempest_dir}
             scp -o StrictHostKeyChecking=no\
             -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-            -r root@${container_ip}:${tempest_dir}/output .
+            -r root@${container_ip}:\$TEMPEST_DIR/output .
 
             scp -o StrictHostKeyChecking=no\
             -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/
@@ -370,9 +371,10 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
 
     try {
         sh """
+            TEMPEST_DIR=${tempest_dir}
             scp -o StrictHostKeyChecking=no\
             -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-            -r root@${container_ip}:${tempest_dir}/subunit .
+            -r root@${container_ip}:\$TEMPEST_DIR/subunit .
 
             scp -o StrictHostKeyChecking=no\
             -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/
@@ -629,9 +631,10 @@ def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir) {
    try {
        sh """
            set -x
+           TEMPEST_DIR=${tempest_dir}
            scp -o StrictHostKeyChecking=no\
            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-           -r root@${container_ip}:${tempest_dir}/output .
+           -r root@${container_ip}:\$TEMPEST_DIR/output .
 
            scp -o StrictHostKeyChecking=no\
            -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/
@@ -644,9 +647,10 @@ def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir) {
    try {
        sh """
            set -x
+           TEMPEST_DIR=${tempest_dir}
            scp -o StrictHostKeyChecking=no\
            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-           -r root@${container_ip}:${tempest_dir}/subunit .
+           -r root@${container_ip}:\$TEMPEST_DIR/subunit .
 
            scp -o StrictHostKeyChecking=no\
            -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/
