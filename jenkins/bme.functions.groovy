@@ -76,9 +76,6 @@ def get_tempest_dir(controller_name='controller01') {
 def configure_tempest(controller_name='controller01'){
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = ""
-
-    tempest_dir = get_tempest_dir(controller_name)
 
     sh """
         ssh -o StrictHostKeyChecking=no\
@@ -127,12 +124,10 @@ def configure_tempest(controller_name='controller01'){
     }
 }
 
-def run_tempest_tests(controller_name='controller01', regex='smoke', results_file = null, elasticsearch_ip = null){
+def run_tempest_tests(controller_name='controller01', regex='smoke', results_file = null, elasticsearch_ip = null, tempest_dir=null){
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    def tempest_output, failures
-
-    String tempest_dir = get_tempest_dir(controller_name)
+    def failures
 
     tempest_output = sh returnStdout: true, script: """
         ssh -o StrictHostKeyChecking=no\
@@ -162,10 +157,9 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
     }
 }
 
-def install_persistent_resources_tests(controller_name='controller01') {
+def install_persistent_resources_tests(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
     // Install Persistent Resources tests on the utility container on ${controller}
     echo 'Installing Persistent Resources Tempest Plugin on the onMetal host'
     sh """
@@ -179,10 +173,9 @@ def install_persistent_resources_tests(controller_name='controller01') {
     """
 }
 
-def install_persistent_resources_tests_parse(controller_name='controller01') {
+def install_persistent_resources_tests_parse(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
     // Install Persistent Resources tests parse on the utility container on ${controller}
     echo 'Installing Persistent Resources Tempest Plugin'
     sh """
@@ -196,10 +189,9 @@ def install_persistent_resources_tests_parse(controller_name='controller01') {
     """
 }
 
-def run_persistent_resources_tests(controller_name='controller01', action='verify', results_file=null){
+def run_persistent_resources_tests(controller_name='controller01', action='verify', results_file=null, tempest_dir=null){
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
 
     if (results_file == null) {
         results_file = action
@@ -218,10 +210,9 @@ def run_persistent_resources_tests(controller_name='controller01', action='verif
     """
 }
 
-def parse_persistent_resources_tests(controller_name='controller01'){
+def parse_persistent_resources_tests(controller_name='controller01', tempest_dir=null){
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
 
     sh """
         ssh -o StrictHostKeyChecking=no\
@@ -234,10 +225,9 @@ def parse_persistent_resources_tests(controller_name='controller01'){
     """
 }
 
-def install_during_upgrade_tests(controller_name='controller01') {
+def install_during_upgrade_tests(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
     // Install during upgrade tests on the utility container on ${controller}
     echo 'Installing during upgrade test on ${controller}_utility container'
     sh """
@@ -254,10 +244,9 @@ def install_during_upgrade_tests(controller_name='controller01') {
     """
 }
 
-def start_during_upgrade_test(controller_name='controller01') {
+def start_during_upgrade_test(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
     // Start during upgrade tests on the utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
@@ -270,7 +259,7 @@ def start_during_upgrade_test(controller_name='controller01') {
     """
 }
 
-def stop_during_upgrade_test(controller_name='controller01') {
+def stop_during_upgrade_test(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
     // Stop during upgrade tests on the utility container on ${controller}
@@ -282,10 +271,9 @@ def stop_during_upgrade_test(controller_name='controller01') {
     """
 }
 
-def install_api_uptime_tests(controller_name='controller01') {
+def install_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
     // install api uptime tests on utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
@@ -300,10 +288,9 @@ def install_api_uptime_tests(controller_name='controller01') {
     """
 }
 
-def start_api_uptime_tests(controller_name='controller01') {
+def start_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
     // start api uptime tests on the utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
@@ -318,10 +305,9 @@ def start_api_uptime_tests(controller_name='controller01') {
     """
 }
 
-def stop_api_uptime_tests(controller_name='controller01') {
+def stop_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
     // Stop api uptime tests on the utility container on ${controller}
     sh """
         ssh -o StrictHostKeyChecking=no\
@@ -350,9 +336,8 @@ def install_tempest_tests(controller_name='controller01') {
     """
 }
 
-def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, controller_name='controller01') {
+def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, controller_name='controller01', tempest_dir=null) {
     String container_ip = get_controller_utility_container_ip(controller_name)
-    String tempest_dir = get_tempest_dir(controller_name)
 
     try {
         sh """
@@ -404,7 +389,7 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
     }
 }
 
-def cleanup_test_results(controller_name='controller01') {
+def cleanup_test_results(controller_name='controller01', tempest_dir=null) {
   String host_ip = get_deploy_node_ip()
   String container_ip = get_controller_utility_container_ip(controller_name)
   tempest_dir = get_tempest_dir(controller_name)
@@ -627,7 +612,7 @@ def parse_upgrade_results_for_failure(upgrade_output = null){
 
 }
 
-def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir) {
+def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir=null) {
    try {
        sh """
            set -x

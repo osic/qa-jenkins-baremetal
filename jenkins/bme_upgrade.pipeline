@@ -72,37 +72,37 @@ node('bme-jenkins-slave-n01'){
         container_tempest_dir = bme.get_tempest_dir(controller_name)
     }
     stage('Run Tempest Smoke Tests') {
-        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip)
+        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip, container_tempest_dir)
     }
 }
 
 stage('Pre-Upgrade Configuration'){
     node('bme-jenkins-slave-n01'){
-        bme.install_api_uptime_tests(controller_name)
-        bme.install_during_upgrade_tests(controller_name)
-        bme.install_persistent_resources_tests(controller_name)
-        bme.install_persistent_resources_tests_parse(controller_name)
-        bme.run_persistent_resources_tests(controller_name, 'create', null)
+        bme.install_api_uptime_tests(controller_name, container_tempest_dir)
+        bme.install_during_upgrade_tests(controller_name, container_tempest_dir)
+        bme.install_persistent_resources_tests(controller_name, container_tempest_dir)
+        bme.install_persistent_resources_tests_parse(controller_name, container_tempest_dir)
+        bme.run_persistent_resources_tests(controller_name, 'create', null, container_tempest_dir)
     }
 }
 
 
 node('bme-jenkins-slave-n01'){
     stage('Start Upgrade tests'){
-        bme.start_api_uptime_tests(controller_name)
-        bme.start_during_upgrade_test(controller_name)
+        bme.start_api_uptime_tests(controller_name, container_tempest_dir)
+        bme.start_during_upgrade_test(controller_name, container_tempest_dir)
     }
     stage('Run Upgrade'){
        bme.bash_upgrade_openstack(to_release, 2, false)
     }
     stage('Stop Upgrade tests'){
-        bme.stop_api_uptime_tests(controller_name)
-        bme.stop_during_upgrade_test(controller_name)
+        bme.stop_api_uptime_tests(controller_name, container_tempest_dir)
+        bme.stop_during_upgrade_test(controller_name, container_tempest_dir)
     }
     stage('Run persistent resources tests'){
-        bme.run_persistent_resources_tests(controller_name, 'verify', null)
-        bme.parse_persistent_resources_tests(controller_name)
-        bme.run_persistent_resources_tests(controller_name, 'clean', null)
+        bme.run_persistent_resources_tests(controller_name, 'verify', null, container_tempest_dir)
+        bme.parse_persistent_resources_tests(controller_name, container_tempest_dir)
+        bme.run_persistent_resources_tests(controller_name, 'clean', null, container_tempest_dir)
     }
 }
 
@@ -115,8 +115,8 @@ stage('Post-Upgrade -- Validate Deploy'){
 
 stage('Post-Upgrade -- Reporting'){
     node('bme-jenkins-slave-n01'){
-        bme.install_persistent_resources_tests_parse(controller_name)
-        bme.parse_persistent_resources_tests(controller_name)
+        bme.install_persistent_resources_tests_parse(controller_name, container_tempest_dir)
+        bme.parse_persistent_resources_tests(controller_name, container_tempest_dir)
         bme.aggregate_results(deploy_node_ip, elasticsearch_ip, controller_utility_container_ip, container_tempest_dir)
     }
     node('elasticsearch'){
