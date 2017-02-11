@@ -72,7 +72,7 @@ node('bme-jenkins-slave-n01'){
         container_tempest_dir = bme.get_tempest_dir(controller_name)
     }
     stage('Run Tempest Smoke Tests') {
-        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip, container_tempest_dir)
+        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip)
     }
 }
 
