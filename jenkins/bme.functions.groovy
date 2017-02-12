@@ -169,8 +169,8 @@ def install_persistent_resources_tests(controller_name='controller01', tempest_d
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
-            rm -rf \$TEMPEST_DIR/persistent-resources-tests
-            git clone https://github.com/osic/persistent-resources-tests.git \$TEMPEST_DIR/persistent-resources-tests
+            #rm -rf \$TEMPEST_DIR/persistent-resources-tests
+            git clone https://github.com/osic/persistent-resources-tests.git \$TEMPEST_DIR/persistent-resources-tests || echo "dir exists"
             pip install --upgrade \$TEMPEST_DIR/persistent-resources-tests/
         '''
     """
@@ -615,8 +615,9 @@ def parse_upgrade_results_for_failure(upgrade_output = null){
 
 }
 
-def aggregate_results(host_ip, elasticsearch_ip, container_ip, tempest_dir=null) {
-   try {
+def aggregate_results(host_ip, elasticsearch_ip, tempest_dir=null) {
+    String container_ip = get_controller_utility_container_ip(controller_name)
+    try {
        sh """
            set -x
            TEMPEST_DIR=${tempest_dir}
