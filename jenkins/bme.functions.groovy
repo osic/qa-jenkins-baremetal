@@ -137,8 +137,8 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
             cd \$TEMPEST_DIR
             stream_id=\$(cat .testrepository/next-stream)
             ostestr --regex ${regex} || echo 'Some smoke tests failed.'
-            mkdir -p \$TEMPEST_DIR/subunit/smoke
-            cp .testrepository/\$stream_id \$TEMPEST_DIR/subunit/smoke/${results_file}
+            mkdir -p /opt/tempest_untagged/subunit/smoke
+            cp .testrepository/\$stream_id /opt/tempest_untagged/subunit/smoke/${results_file}
         '''
     """
     if (tempest_output.contains('- Failed:') == true) {
@@ -207,8 +207,9 @@ def run_persistent_resources_tests(controller_name='controller01', action='verif
             cd \$TEMPEST_DIR
             stream_id=\$(cat .testrepository/next-stream)
             ostestr --regex persistent-${action} || echo 'Some persistent resources tests failed.'
-            mkdir -p \$TEMPEST_DIR/subunit/persistent_resources/
-            cp .testrepository/\$stream_id \$TEMPEST_DIR/subunit/persistent_resources/${results_file}
+            mkdir -p /opt/tempest_untagged/subunit/persistent_resources/
+            #cp .testrepository/\$stream_id \$TEMPEST_DIR/subunit/persistent_resources/${results_file}
+            cp .testrepository/\$stream_id /opt/tempest_untagged/subunit/persistent_resources/${results_file}
         '''
     """
 }
@@ -222,7 +223,8 @@ def parse_persistent_resources_tests(controller_name='controller01', tempest_dir
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR/subunit/persistent_resources/
-            resource-parse --u . > \$TEMPEST_DIR/output/persistent_resource.txt
+            #resource-parse --u . > \$TEMPEST_DIR/output/persistent_resource.txt
+            resource-parse --u . > /opt/tempest_untagged/output/persistent_resource.txt
             rm *.csv
         '''
     """

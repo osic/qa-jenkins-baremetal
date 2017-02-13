@@ -147,7 +147,7 @@ stage('Post-Upgrade -- Validate Deploy'){
 stage('Post-Upgrade -- Reporting'){
     node('bme-jenkins-slave-n01'){
       try {
-          bme.install_persistent_resources_tests_parse(controller_name, container_tempest_dir)
+          bme.install_persistent_resources_tests_parse(controller_name, '/openstack/venvs/tempest_untagged')
       } catch (err){
           echo "Error in step"
           echo err.message
