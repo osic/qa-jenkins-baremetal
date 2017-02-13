@@ -93,7 +93,7 @@ node('bme-jenkins-slave-n01'){
         bme.start_during_upgrade_test(controller_name, container_tempest_dir)
     }
     stage('Run Upgrade'){
-	sh "sleep 600"
+	     sh "sleep 180"
        //bme.bash_upgrade_openstack(to_release, 2, false)
     }
     stage('Stop Upgrade tests'){
