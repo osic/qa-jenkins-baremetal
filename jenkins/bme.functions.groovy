@@ -148,8 +148,14 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
             echo 'Parsing failed smoke'
             echo 'Failures'
             echo tempest_output
+            try {
+                aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, controller_name, tempest_dir)
+            } catch (err){
+                echo "error parsing failed smoke"
+                echo err.message
+            }
                 //if (elasticsearch_ip != null) {
-                //    aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, controller_name, tempest_dir)
+                //
                 //}
             //error "${failures} tests from the Tempest smoke tests failed, stopping the pipeline."
         } else {
