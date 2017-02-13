@@ -309,7 +309,7 @@ def start_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
             TEMPEST_DIR=${tempest_dir}
             mkdir -p \$TEMPEST_DIR/output
             rm -f /usr/api.uptime.stop
-            cd \$TEMPEST_DIR/api_uptime
+            cd \$TEMPEST_DIR/api_uptime/api_uptime
             python call_test.py --verbose --daemon --services nova,swift\
              --output-file \$TEMPEST_DIR/output/api.uptime.out
         ''' &
