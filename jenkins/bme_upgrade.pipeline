@@ -140,8 +140,8 @@ stage('Post-Upgrade -- Validate Deploy'){
             echo err.message
         }
     }
-  }
 }
+
 
 stage('Post-Upgrade -- Reporting'){
     node('bme-jenkins-slave-n01'){
