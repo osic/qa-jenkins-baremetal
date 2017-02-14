@@ -105,6 +105,8 @@ stage('Post-Upgrade -- Validate Deploy'){
     node('bme-jenkins-slave-n01'){
         try {
           bme.install_tempest_tests(controller_name)
+          //pause just a bit after tests installed, before configuring
+          sh "sleep 300"
         } catch (err){
           echo "Error in step"
           echo err.message
