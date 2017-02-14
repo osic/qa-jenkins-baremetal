@@ -144,7 +144,7 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
     if (tempest_output.contains('- Failed:') == true) {
         failures = tempest_output.substring(tempest_output.indexOf('- Failed:') + 10)
         failures = failures.substring(0,failures.indexOf('\n')).toInteger()
-        if (failures > 1) {
+        if (failures >= 0) {
             echo 'Parsing failed smoke'
             echo 'Failures'
             echo tempest_output
