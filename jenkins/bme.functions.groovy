@@ -261,6 +261,7 @@ def start_during_upgrade_test(controller_name='controller01', tempest_dir=null) 
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
+            set -x
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR
             cd rolling-upgrades-during-test
@@ -305,6 +306,7 @@ def start_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
+            set -x
             TEMPEST_DIR=${tempest_dir}
             mkdir -p \$TEMPEST_DIR/output
             rm -f /usr/api.uptime.stop
@@ -322,6 +324,7 @@ def stop_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
+            set -x
             TEMPEST_DIR=${tempest_dir}
             touch /usr/api.uptime.stop
 
