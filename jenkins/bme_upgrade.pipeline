@@ -72,7 +72,7 @@ node('bme-jenkins-slave-n01'){
         container_tempest_dir = bme.get_tempest_dir(controller_name)
     }
     stage('Run Tempest Smoke Tests') {
-        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip)
+        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip, '/opt/tempest_untagged')
     }
 }
 
@@ -104,19 +104,19 @@ node('bme-jenkins-slave-n01'){
 stage('Post-Upgrade -- Validate Deploy'){
     node('bme-jenkins-slave-n01'){
         try {
+          bme.install_tempest_tests(controller_name)
+        } catch (err){
+          echo "Error in step"
+          echo err.message
+        }
+        try {
             bme.configure_tempest(controller_name)
         } catch (err){
             echo "Error in step"
             echo err.message
         }
         try {
-            bme.install_tempest_tests(controller_name)
-        } catch (err){
-            echo "Error in step"
-            echo err.message
-        }
-        try {
-            bme.run_tempest_tests(controller_name, 'smoke', 'after_upgrade', elasticsearch_ip)
+            bme.run_tempest_tests(controller_name, 'smoke', 'after_upgrade', elasticsearch_ip, '/openstack/venvs/tempest_untagged')
         } catch (err){
             echo "Error in step"
             echo err.message

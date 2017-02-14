@@ -123,11 +123,10 @@ def configure_tempest(controller_name='controller01'){
     }
 }
 
-def run_tempest_tests(controller_name='controller01', regex='smoke', results_file = null, elasticsearch_ip = null){
+def run_tempest_tests(controller_name='controller01', regex='smoke', results_file = null, elasticsearch_ip = null, tempst_dir=null){
     String host_ip = get_deploy_node_ip()
     String container_ip = get_controller_utility_container_ip(controller_name)
 
-    String tempest_dir = get_tempest_dir(controller_name)
     def failures
 
     tempest_output = sh returnStdout: true, script: """
