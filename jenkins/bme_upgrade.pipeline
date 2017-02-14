@@ -68,7 +68,7 @@ node('bme-jenkins-slave-n01'){
     stage('Install and Configure tempest'){
         bme.setup_ssh_pub_key()
         bme.install_tempest_tests(controller_name)
-        bme.configure_tempest(controller_name)
+        bme.configure_tempest(controller_name, '/opt/tempest_untagged')
         container_tempest_dir = bme.get_tempest_dir(controller_name)
     }
     stage('Run Tempest Smoke Tests') {
@@ -110,7 +110,7 @@ stage('Post-Upgrade -- Validate Deploy'){
           echo err.message
         }
         try {
-            bme.configure_tempest(controller_name)
+            bme.configure_tempest(controller_name, '/openstack/venvs/tempest-untagged')
         } catch (err){
             echo "Error in step"
             echo err.message
