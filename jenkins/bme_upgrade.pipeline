@@ -101,19 +101,19 @@ node('bme-jenkins-slave-n01'){
     }
     stage('Run persistent resources tests'){
       try {
-          bme.run_persistent_resources_tests(controller_name, 'verify', null, '/opt/tempest_untagged')
+          bme.run_persistent_resources_tests(controller_name, 'verify', null, '/openstack/venvs/tempest_untagged')
       } catch (err){
           echo "Error in step"
           echo err.message
       }
       try {
-          bme.parse_persistent_resources_tests(controller_name, '/opt/tempest_untagged')
+          bme.parse_persistent_resources_tests(controller_name, '/openstack/venvs/tempest_untagged')
       } catch (err){
           echo "Error in step"
           echo err.message
       }
       try {
-          bme.run_persistent_resources_tests(controller_name, 'clean', null, '/opt/tempest_untagged')
+          bme.run_persistent_resources_tests(controller_name, 'clean', null, '/openstack/venvs/tempest_untagged')
       } catch (err){
           echo "Error in step"
           echo err.message
@@ -153,7 +153,7 @@ stage('Post-Upgrade -- Reporting'){
           echo err.message
       }
       try {
-          bme.parse_persistent_resources_tests(controller_name, container_tempest_dir)
+          bme.parse_persistent_resources_tests(controller_name, '/openstack/venvs/tempest_untagged')
       } catch (err){
           echo "Error in step"
           echo err.message
