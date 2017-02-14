@@ -327,9 +327,9 @@ def stop_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
             TEMPEST_DIR=${tempest_dir}
             touch /usr/api.uptime.stop
 
-            # Wait up to 10 seconds for the results file gets created by the script
+            # Wait up to 120 seconds for the results file gets created by the script
             x=0
-            while [ \$x -lt 100 -a ! -e \$TEMPEST_DIR/output/api.uptime.out ]; do
+            while [ \$x -lt 1200 -a ! -e \$TEMPEST_DIR/output/api.uptime.out ]; do
                 x=\$((x+1))
                 sleep .1
             done
