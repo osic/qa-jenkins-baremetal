@@ -114,10 +114,12 @@ stage('Post-Upgrade -- Validate Deploy'){
         try {
             bme.configure_tempest(controller_name, '/openstack/venvs/tempest-untagged')
         } catch (err){
+            sh "sleep 300"
             echo "Error in step"
             echo err.message
         }
         try {
+            sh "sleep 300"
             bme.run_tempest_tests(controller_name, 'smoke', 'after_upgrade', elasticsearch_ip, '/openstack/venvs/tempest-untagged')
         } catch (err){
             echo "Error in step"
@@ -130,13 +132,19 @@ stage('Post-Upgrade -- Validate Deploy'){
             echo err.message
         }
         try {
-            bme.parse_persistent_resources_tests(controller_name, '/openstack/venvs/tempest-untagged')
+          bme.run_persistent_resources_tests(controller_name, 'clean', null, '/openstack/venvs/tempest-untagged')
         } catch (err){
-            echo "Error in step"
-            echo err.message
+          echo "Error in step"
+          echo err.message
         }
         try {
-            bme.run_persistent_resources_tests(controller_name, 'clean', null, '/openstack/venvs/tempest-untagged')
+          bme.install_persistent_resources_tests_parse(controller_name, '/openstack/venvs/tempest-untagged')
+        } catch (err){
+          echo "Error in step"
+          echo err.message
+        }
+        try {
+            bme.parse_persistent_resources_tests(controller_name, '/opt/tempest_untagged')
         } catch (err){
             echo "Error in step"
             echo err.message
@@ -144,21 +152,8 @@ stage('Post-Upgrade -- Validate Deploy'){
     }
 }
 
-
 stage('Post-Upgrade -- Reporting'){
     node('bme-jenkins-slave-n01'){
-      try {
-          bme.install_persistent_resources_tests_parse(controller_name, '/openstack/venvs/tempest-untagged')
-      } catch (err){
-          echo "Error in step"
-          echo err.message
-      }
-      try {
-          bme.parse_persistent_resources_tests(controller_name, '/openstack/venvs/tempest-untagged')
-      } catch (err){
-          echo "Error in step"
-          echo err.message
-      }
       try {
           bme.aggregate_results(deploy_node_ip, elasticsearch_ip, container_tempest_dir)
       } catch (err){
