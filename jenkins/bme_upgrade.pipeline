@@ -78,6 +78,7 @@ node('bme-jenkins-slave-n01'){
 
 stage('Pre-Upgrade Configuration'){
     node('bme-jenkins-slave-n01'){
+        bme.transfer_tempest_configuration_to_controller(controller_name)
         bme.install_api_uptime_tests(controller_name, container_tempest_dir)
         bme.install_during_upgrade_tests(controller_name, container_tempest_dir)
         bme.install_persistent_resources_tests(controller_name, container_tempest_dir)
