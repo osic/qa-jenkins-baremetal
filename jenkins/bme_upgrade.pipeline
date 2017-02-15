@@ -155,7 +155,7 @@ stage('Post-Upgrade -- Validate Deploy'){
 stage('Post-Upgrade -- Reporting'){
     node('bme-jenkins-slave-n01'){
       try {
-          bme.aggregate_results(deploy_node_ip, elasticsearch_ip, container_tempest_dir)
+          bme.aggregate_results(deploy_node_ip, elasticsearch_ip, container_tempest_dir, controller_name)
       } catch (err){
           echo "Error in step"
           echo err.message
