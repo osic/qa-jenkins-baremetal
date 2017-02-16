@@ -48,6 +48,12 @@ stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
     }
 }
 
+node('elasticsearch'){
+    stage("Clean up any previous test run results"){
+      bme.cleanup_test_results()
+    }
+}
+
 
 node('bme-jenkins-slave-n01'){
     // env prep
@@ -72,7 +78,6 @@ node('bme-jenkins-slave-n01'){
         container_tempest_dir = bme.get_tempest_dir(controller_name)
     }
     stage('Run Tempest Smoke Tests') {
-        bme.cleanup_test_results()
         bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip, '/opt/tempest_untagged')
     }
 }
