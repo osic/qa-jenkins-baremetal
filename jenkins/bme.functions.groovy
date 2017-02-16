@@ -416,20 +416,19 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
     }
 }
 
-def cleanup_test_results(controller_name='controller01', tempest_dir=null) {
-  String host_ip = get_deploy_node_ip()
-  String container_ip = get_controller_utility_container_ip(controller_name)
-  tempest_dir = get_tempest_dir(controller_name)
-
-  // Clean up existing tests results
-  sh """
-      ssh -o StrictHostKeyChecking=no\
-      -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
-          find ${tempest_dir}/subunit ! -name '.*' ! -type d -exec rm -- {} + || echo "No subunit directory found."
-          find ${tempest_dir}/output ! -name '.*' ! -type d -exec rm -- {} + || echo "No output directory found."
-      '''
-  """
-  echo "Previous test runs removed"
+def cleanup_test_results() {
+  // Clean up existing tests results on elasticsearch node
+  try {
+      sh """
+          rm -rf output || echo "no output directory exists"
+          rm -rf subunit || echo "no subunit directory exists"
+          rm -rf uptime_output || echo "no subunit directory exists"
+      """
+      echo "Previous test runs removed"
+  } catch(err) {
+     echo "Error removing previous test runs"
+     echo err.message
+  }
 }
 
 def connect_vpn(host=null, user=null, pass=null){
@@ -667,7 +666,7 @@ def aggregate_results(host_ip, elasticsearch_ip, tempest_dir=null, controller_na
           -r root@${controller_name}:/root/output .
 
           scp -o StrictHostKeyChecking=no\
-          -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/uptime_output
+          output/* ubuntu@${elasticsearch_ip}:/home/ubuntu/uptime_output/
       """
   } catch(err) {
       echo "Error moving output directory"
@@ -689,6 +688,8 @@ def aggregate_results(host_ip, elasticsearch_ip, tempest_dir=null, controller_na
        echo err.message
    }
 }
+
+
 
 def upgrade_openstack(release = 'master') {
 
