@@ -247,6 +247,7 @@ def transfer_tempest_configuration_to_controller(controller_name='controller01')
           -r root@${container_ip}:/opt/tempest_untagged/etc .
 
           scp -o StrictHostKeyChecking=no\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
           -r etc root@${controller_name}:/root/
       """
   } catch(err) {
