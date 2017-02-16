@@ -229,6 +229,7 @@ def parse_persistent_resources_tests(controller_name='controller01', tempest_dir
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR/subunit/persistent_resources/
+            mkdir /opt/tempest_untagged/output || "output directory exists"
             #resource-parse --u . > \$TEMPEST_DIR/output/persistent_resource.txt
             resource-parse --u . > /opt/tempest_untagged/output/persistent_resource.txt
             rm *.csv
@@ -404,7 +405,7 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
                 -b \$HOME/subunit/smoke/before_upgrade -a \$HOME/subunit/smoke/after_upgrade
 
                 elastic-upgrade -s \$HOME/output/nova_status.json,\
-                \$HOME/output/swift_status.json,\$HOME/output/keystone_status.json
+                \$HOME/uptime_output/swift_status.json,\$HOME/uptime_output/keystone_status.json
             '''
         """
     } else {
