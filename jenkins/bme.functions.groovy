@@ -421,9 +421,9 @@ def cleanup_test_results() {
   // Clean up existing tests results on elasticsearch node
   try {
       sh """
-          rm -rf output || echo "no output directory exists"
-          rm -rf subunit || echo "no subunit directory exists"
-          rm -rf uptime_output || echo "no subunit directory exists"
+          rm -rf /home/ubuntu/output || echo "no output directory exists"
+          rm -rf /home/ubuntu/subunit || echo "no subunit directory exists"
+          rm -rf /home/ubuntu/uptime_output || echo "no subunit directory exists"
       """
       echo "Previous test runs removed"
   } catch(err) {
