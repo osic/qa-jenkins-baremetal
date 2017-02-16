@@ -78,6 +78,7 @@ node('bme-jenkins-slave-n01'){
 
 stage('Pre-Upgrade Configuration'){
     node('bme-jenkins-slave-n01'){
+        bme.clear_ssh_host_key(controller_name)
         bme.transfer_tempest_configuration_to_controller(controller_name)
         bme.install_api_uptime_tests(controller_name, container_tempest_dir)
         bme.install_during_upgrade_tests(controller_name, container_tempest_dir)
@@ -97,6 +98,7 @@ node('bme-jenkins-slave-n01'){
 	      bme.bash_upgrade_openstack(to_release, 1, false)
     }
     stage('Stop Upgrade tests'){
+        bme.clear_ssh_host_key(controller_name)
         bme.stop_api_uptime_tests(controller_name, container_tempest_dir)
         bme.stop_during_upgrade_test(controller_name, container_tempest_dir)
     }

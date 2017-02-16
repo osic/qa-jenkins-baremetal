@@ -585,6 +585,10 @@ def fake_run_upgrade_return_results(release='master', host_ip="127.0.0.1"){
     return upgrade_output
 }
 
+def clear_ssh_host_key(controller_name="controller01") {
+    sh """ ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R $controller_name"""
+}
+
 def run_upgrade_return_results(release="master", host_ip="127.0.0.1"){
     String upgrade_output = ""
     String failure_output = ""
