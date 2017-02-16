@@ -265,7 +265,7 @@ def install_during_upgrade_tests(controller_name='controller01', tempest_dir=nul
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             cd /root/
-            mkdir -p uptime_output || echo "output dir exists"
+            mkdir -p /root/output || echo "output directory exists"
             rm -rf rolling-upgrades-during-test
             git clone https://github.com/osic/rolling-upgrades-during-test
             cd rolling-upgrades-during-test
@@ -283,7 +283,7 @@ def start_during_upgrade_test(controller_name='controller01', tempest_dir=null) 
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             set -x
             cd /root/rolling-upgrades-during-test
-            python call_test.py --daemon --output-file /root/uptime_output/during.uptime.out
+            python call_test.py --daemon --output-file /root/output/during.uptime.out
         ''' &
     """
 }
@@ -307,7 +307,7 @@ def install_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
-            mkdir -p /root/uptime_output || echo "output directory exists"
+            mkdir -p /root/output || echo "output directory exists"
             rm -rf /root/api_uptime
             git clone https://github.com/osic/api_uptime.git /root/api_uptime
             cd /root/api_uptime
@@ -327,7 +327,7 @@ def start_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
             rm -f /usr/api.uptime.stop
             cd /root/api_uptime/api_uptime
             python call_test.py --verbose --daemon --services nova,swift\
-             --output-file /root/uptime_output/api.uptime.out
+             --output-file /root/output/api.uptime.out
         ''' &
     """
 }
@@ -344,7 +344,7 @@ def stop_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
 
             # Wait up to 60 seconds for the results file gets created by the script
             x=0
-            while [ \$x -lt 600 -a ! -e /root/uptime_output/api.uptime.out ]; do
+            while [ \$x -lt 600 -a ! -e /root/output/api.uptime.out ]; do
                 x=\$((x+1))
                 sleep .1
             done
@@ -386,25 +386,10 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
             TEMPEST_DIR=${tempest_dir}
             scp -o StrictHostKeyChecking=no\
             -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-            -r root@${controller_name}:/root/uptime_output .
-
-            scp -o StrictHostKeyChecking=no\
-            -r uptime_output ubuntu@${elasticsearch_ip}:/home/ubuntu/
-        """
-    } catch(err) {
-        echo "Error moving output directory"
-        echo err.message
-    }
-
-    try {
-        sh """
-            TEMPEST_DIR=${tempest_dir}
-            scp -o StrictHostKeyChecking=no\
-            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
             -r root@${container_ip}:\$TEMPEST_DIR/subunit .
 
             scp -o StrictHostKeyChecking=no\
-            -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/
+            -r subunit ubuntu@${elasticsearch_ip}:/home/ubuntu/
         """
     } catch(err) {
         echo "No subunit directory found"
@@ -679,10 +664,10 @@ def aggregate_results(host_ip, elasticsearch_ip, tempest_dir=null, controller_na
       sh """
           scp -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-          -r root@${controller_name}:/root/uptime_output .
+          -r root@${controller_name}:/root/output .
 
           scp -o StrictHostKeyChecking=no\
-          -r uptime_output ubuntu@${elasticsearch_ip}:/home/ubuntu/
+          -r output ubuntu@${elasticsearch_ip}:/home/ubuntu/uptime_output
       """
   } catch(err) {
       echo "Error moving output directory"
