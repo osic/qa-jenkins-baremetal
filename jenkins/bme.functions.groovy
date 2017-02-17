@@ -341,6 +341,7 @@ def stop_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             set -x
+            ps aux|grep call_test > output/processes.txt
             touch /usr/api.uptime.stop
 
             # Wait up to 60 seconds for the results file gets created by the script
