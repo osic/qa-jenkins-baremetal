@@ -229,7 +229,7 @@ def parse_persistent_resources_tests(controller_name='controller01', tempest_dir
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
             TEMPEST_DIR=${tempest_dir}
             cd \$TEMPEST_DIR/subunit/persistent_resources/
-            mkdir /opt/tempest_untagged/output || "output directory exists"
+            mkdir /opt/tempest_untagged/output || echo "output directory exists"
             #resource-parse --u . > \$TEMPEST_DIR/output/persistent_resource.txt
             resource-parse --u . > /opt/tempest_untagged/output/persistent_resource.txt
             rm *.csv
