@@ -400,12 +400,12 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
     if (results_file == 'after_upgrade'){
         sh """
             ssh -o StrictHostKeyChecking=no ubuntu@${elasticsearch_ip} '''
-                elastic-upgrade -u \$HOME/uptime_output/api.uptime.out\
-                -d \$HOME/uptime_output/during.uptime.out -p \$HOME/output/persistent_resource.txt\
+                elastic-upgrade -u \$HOME/output/api.uptime.out\
+                -d \$HOME/output/during.uptime.out -p \$HOME/output/persistent_resource.txt\
                 -b \$HOME/subunit/smoke/before_upgrade -a \$HOME/subunit/smoke/after_upgrade
 
                 elastic-upgrade -s \$HOME/output/nova_status.json,\
-                \$HOME/uptime_output/swift_status.json,\$HOME/uptime_output/keystone_status.json
+                \$HOME/output/swift_status.json,\$HOME/output/keystone_status.json
             '''
         """
     } else {
@@ -667,7 +667,7 @@ def aggregate_results(host_ip, elasticsearch_ip, tempest_dir=null, controller_na
           -r root@${controller_name}:/root/output .
 
           scp -o StrictHostKeyChecking=no\
-          output/* ubuntu@${elasticsearch_ip}:/home/ubuntu/uptime_output/
+          output/* ubuntu@${elasticsearch_ip}:/home/ubuntu/output/
       """
   } catch(err) {
       echo "Error moving output directory"
