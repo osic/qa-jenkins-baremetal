@@ -404,9 +404,8 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
                 elastic-upgrade -u \$HOME/output/api.uptime.out\
                 -f \$HOME/output/swift_status.json -n \$HOME/output/nova_status.json -k \$HOME/output/keystone_status.json\
                 -p \$HOME/output/persistent_resource.txt -b \$HOME/subunit/smoke/before_upgrade\
-                -a \$HOME/subunit/smoke/after_upgrade
-                elastic-upgrade -g \$HOME/output/nova_api_status.json
-                elastic-upgrade -g \$HOME/output/swift_api_status.json
+                -a \$HOME/subunit/smoke/after_upgrade -g \$HOME/output/nova_api_status.json -w \$HOME/output/swift_api_status.json
+
                 elastic-upgrade -s \$HOME/output/nova_status.json,\$HOME/output/swift_status.json,\$HOME/output/keystone_status.json
             '''
         """
