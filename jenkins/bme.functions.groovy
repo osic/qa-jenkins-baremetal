@@ -401,8 +401,8 @@ def aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, contro
     if (results_file == 'after_upgrade'){
         sh """
             ssh -o StrictHostKeyChecking=no ubuntu@${elasticsearch_ip} '''
-                elastic-upgrade -u \$HOME/output/api.uptime.out\
-                -f \$HOME/output/swift_status.json -n \$HOME/output/nova_status.json -k \$HOME/output/keystone_status.json\
+                elastic-upgrade -f \$HOME/output/swift_status.json
+                -n \$HOME/output/nova_status.json -k \$HOME/output/keystone_status.json\
                 -p \$HOME/output/persistent_resource.txt -b \$HOME/subunit/smoke/before_upgrade\
                 -a \$HOME/subunit/smoke/after_upgrade -g \$HOME/output/nova_api_status.json -w \$HOME/output/swift_api_status.json
 
