@@ -100,6 +100,7 @@ node('bme-jenkins-slave-n01'){
     stage('Start Upgrade tests'){
         bme.start_api_uptime_tests(controller_name, container_tempest_dir)
         bme.start_during_upgrade_test(controller_name, container_tempest_dir)
+	bme.start_nova_during_upgrade_test(controller_name, container_tempest_dir)
     }
     stage('Run Upgrade'){
 	      bme.bash_upgrade_openstack(to_release, 1, false)
