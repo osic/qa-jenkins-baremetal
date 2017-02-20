@@ -284,7 +284,21 @@ def start_during_upgrade_test(controller_name='controller01', tempest_dir=null) 
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             set -x
             cd /root/rolling-upgrades-during-test
-            python call_test.py --daemon --output-file /root/output/during.uptime.out
+            python call_test.py --daemon -s swift,keystone --output-file /root/output/during.uptime.out
+        ''' &
+    """
+}
+
+def start_nova_during_upgrade_test(controller_name='controller01', tempest_dir=null) {
+    String host_ip = get_deploy_node_ip()
+    //String container_ip = get_controller_utility_container_ip(controller_name)
+    // Start during upgrade tests on the utility container on ${controller}
+    sh """
+        ssh -o StrictHostKeyChecking=no\
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
+            set -x
+            cd /root/rolling-upgrades-during-test
+            python call_test.py --daemon -s nova --output-file /root/output/during.uptime.out
         ''' &
     """
 }
