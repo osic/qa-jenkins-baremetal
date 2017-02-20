@@ -297,6 +297,7 @@ def stop_during_upgrade_test(controller_name='controller01', tempest_dir=null) {
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             touch /usr/during.uptime.stop
+            ps aux|grep call_test > /root/output/after_stopdur_processes.txt
         '''
     """
 }
@@ -343,6 +344,7 @@ def stop_api_uptime_tests(controller_name='controller01', tempest_dir=null) {
             set -x
             ps aux|grep call_test > /root/output/processes.txt
             touch /usr/api.uptime.stop
+            ps aux|grep call_test > /root/output/after_stopapi_processes.txt
 
             # Wait up to 60 seconds for the results file gets created by the script
             x=0
