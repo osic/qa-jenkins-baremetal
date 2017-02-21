@@ -311,7 +311,6 @@ def stop_during_upgrade_test(controller_name='controller01', tempest_dir=null) {
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             touch /usr/during.uptime.stop
-            touch /usr/during.novauptime.stop
             ps aux|grep call_test > /root/output/after_stopdur_processes.txt
         '''
     """
