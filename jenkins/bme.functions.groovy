@@ -197,6 +197,7 @@ def install_persistent_resources_tests_parse(controller_name='controller01', tem
             pip install --upgrade \$TEMPEST_DIR/persistent-resources-tests-parse/
         '''
     """
+}
 
 def run_persistent_resources_tests(controller_name='controller01', action='verify', results_file=null, tempest_dir=null){
     String host_ip = get_deploy_node_ip()
