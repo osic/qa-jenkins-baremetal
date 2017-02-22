@@ -90,6 +90,9 @@ stage('Pre-Upgrade Configuration'){
         bme.install_during_upgrade_tests(controller_name, container_tempest_dir)
         bme.install_persistent_resources_tests(controller_name, container_tempest_dir)
         bme.install_persistent_resources_tests_parse(controller_name, container_tempest_dir)
+	//bme.install_rally(controller_name, container_tempest_dir)
+	//bme.prime_rally_benchmarks(controller_name, container_tempest_dir)
+	//bme.run_rally_benchmarks(controller_name, container_tempest_dir, 'before_upgrade') 
         bme.run_persistent_resources_tests(controller_name, 'create', null, container_tempest_dir)
         bme.run_persistent_resources_tests(controller_name, 'verify', 'before_upgrade', container_tempest_dir)
     }
