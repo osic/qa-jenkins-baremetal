@@ -149,7 +149,8 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
             echo 'Failures'
             echo tempest_output
             try {
-                aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, controller_name, tempest_dir)
+                //Let's leave this out for now since we aren't actually stopping the tests on fails.
+                //aggregate_parse_failed_smoke(host_ip, results_file, elasticsearch_ip, controller_name, tempest_dir)
             } catch (err){
                 echo "error parsing failed smoke"
                 echo err.message
@@ -196,7 +197,6 @@ def install_persistent_resources_tests_parse(controller_name='controller01', tem
             pip install --upgrade \$TEMPEST_DIR/persistent-resources-tests-parse/
         '''
     """
-}
 
 def run_persistent_resources_tests(controller_name='controller01', action='verify', results_file=null, tempest_dir=null){
     String host_ip = get_deploy_node_ip()
