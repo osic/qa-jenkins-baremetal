@@ -251,7 +251,7 @@ def install_rally(controller_name='controller01', tempest_dir=null) {
             rm -rf rally/
             wget -q -O- https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh | bash
             cd rally/
-            sudo git clone https://github.com/jwatford/rally-scenarios.git
+            sudo git clone https://github.com/osic/rally-scenarios.git
             cd rally-scenarios/
             sudo python extract_values.py
         '''
