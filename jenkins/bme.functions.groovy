@@ -345,7 +345,7 @@ def start_during_upgrade_test(controller_name='controller01', tempest_dir=null) 
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             set -x
             cd /root/rolling-upgrades-during-test
-            python call_test.py --daemon -s swift,keystone --output-file /root/output/during.uptime.out
+            python call_test.py --daemon -s swift,keystone --output-file /root/output/during.uptime.out > /root/output/during_log_2
         ''' &
     """
 }
@@ -359,7 +359,7 @@ def start_nova_during_upgrade_test(controller_name='controller01', tempest_dir=n
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             set -x
             cd /root/rolling-upgrades-during-test
-            python call_test.py --daemon -m -s nova --output-file /root/output/during.novauptime.out
+            python call_test.py --daemon -m -s nova --output-file /root/output/during.novauptime.out > /root/output/during_log_2
         ''' &
     """
 }
