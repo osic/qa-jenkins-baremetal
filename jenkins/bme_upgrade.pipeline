@@ -84,17 +84,91 @@ node('bme-jenkins-slave-n01'){
 
 stage('Pre-Upgrade Configuration'){
     node('bme-jenkins-slave-n01'){
+      try {    
         bme.clear_ssh_host_key(controller_name)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {
         bme.transfer_tempest_configuration_to_controller(controller_name)
-        bme.install_api_uptime_tests(controller_name, container_tempest_dir)
-        bme.install_during_upgrade_tests(controller_name, container_tempest_dir)
-        bme.install_persistent_resources_tests(controller_name, container_tempest_dir)
-        bme.install_persistent_resources_tests_parse(controller_name, container_tempest_dir)
-	//bme.install_rally(controller_name, container_tempest_dir)
-	//bme.prime_rally_benchmarks(controller_name, container_tempest_dir)
-	//bme.run_rally_benchmarks(controller_name, container_tempest_dir, 'before_upgrade') 
-        bme.run_persistent_resources_tests(controller_name, 'create', null, container_tempest_dir)
-        bme.run_persistent_resources_tests(controller_name, 'verify', 'before_upgrade', container_tempest_dir)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {
+	bme.install_api_uptime_tests(controller_name, container_tempest_dir)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {  
+	bme.install_during_upgrade_tests(controller_name, container_tempest_dir)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {  
+	bme.install_persistent_resources_tests(controller_name, container_tempest_dir)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {  
+	bme.install_persistent_resources_tests_parse(controller_name, container_tempest_dir)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {
+	  bme.copy_tempest_configuration_for_rally()
+	} catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {
+	  bme.install_rally(controller_name, container_tempest_dir)
+	} catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {
+	  bme.prime_rally_benchmarks(controller_name, container_tempest_dir)
+	} catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {
+	  bme.run_rally_benchmarks(controller_name, container_tempest_dir, 'before_upgrade')
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message 
+      }
+      try {  
+	bme.run_persistent_resources_tests(controller_name, 'create', null, container_tempest_dir)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+      try {  
+	bme.run_persistent_resources_tests(controller_name, 'verify', 'before_upgrade', container_tempest_dir)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step"
+            echo err.message
+      }
+
     }
 }
 
