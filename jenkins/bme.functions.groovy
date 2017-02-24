@@ -246,7 +246,7 @@ def copy_tempest_configuration_for_rally(controller_name='controller01'){
       sh """
           scp -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-          root@${container_ip}:/etc/tempest.conf .
+          root@${container_ip}:/opt/tempest_untagged/etc/tempest.conf .
 
           scp -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
