@@ -251,9 +251,17 @@ def copy_tempest_configuration_for_rally(controller_name='controller01'){
           scp -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
           root@${container_ip}:/root/openrc .
+
+          scp -o StrictHostKeyChecking=no\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -r /root/tempest.conf root@${controller_name}:/root/
+
+          scp -o StrictHostKeyChecking=no\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -r /root/openrc root@${controller_name}:/root/
       """
   } catch(err) {
-      echo "Error moving tempest etc directory"
+      echo "Error moving tempest config and openrc directory"
       echo err.message
   }
 }
@@ -305,10 +313,9 @@ def run_rally_benchmarks(controller_name='controller01', tempest_dir=null, resul
             cd /root/
             source openrc
             rally deployment use --deployment existing
-            cd /rally.git/rally-scenarios/
+            cd rally.git/rally-scenarios/
             rally task start benchmark.json --task-args-file args.yaml
             rally task results > /output/${results_file}.json
-            deactivate
         '''
     """
 }
