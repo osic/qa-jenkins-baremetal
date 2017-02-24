@@ -128,21 +128,21 @@ stage('Pre-Upgrade Configuration'){
       }
       try {
 	  bme.copy_tempest_configuration_for_rally(controller_name)
-	} catch (err){
+      } catch (err){
             sh "sleep 300"
             echo "Error in step"
             echo err.message
       }
       try {
 	  bme.install_rally(controller_name, container_tempest_dir)
-	} catch (err){
+      } catch (err){
             sh "sleep 300"
             echo "Error in step"
             echo err.message
       }
       try {
 	  bme.prime_rally_benchmarks(controller_name, container_tempest_dir)
-	} catch (err){
+      } catch (err){
             sh "sleep 300"
             echo "Error in step"
             echo err.message
