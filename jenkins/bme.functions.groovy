@@ -240,39 +240,41 @@ def parse_persistent_resources_tests(controller_name='controller01', tempest_dir
 
 def install_rally(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
-    String container_ip = get_controller_utility_container_ip(controller_name)
 
-    echo 'Installing during upgrade test on ${controller}_utility container'
+    echo 'Installing during upgrade test on ${controller_name}_utility container'
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
-            TEMPEST_DIR=${tempest_dir}
-            cd \$TEMPEST_DIR/
-            rm -rf rally/
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
+            rm -rf rally.git/
+            apt-get install -y libpq-dev libxml2-dev libxslt1-dev
             wget -q -O- https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh | bash
-            cd rally/
-            sudo git clone https://github.com/osic/rally-scenarios.git
+            scp -o StrictHostKeyChecking=no\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+            -r root@${controller_name}: ~/etc/tempest.conf
+            scp -o StrictHostKeyChecking=no\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+            -r root@${controller_name}: ~/openrc
+            cd rally.git/
+            git clone https://github.com/osic/rally-scenarios.git
             cd rally-scenarios/
-            sudo python extract_values.py
+            python extract_values.py
         '''
     """
 }
 
 def prime_rally_benchmarks(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
-    String container_ip = get_controller_utility_container_ip(controller_name)
 
-    echo 'Installing during upgrade test on ${controller}_utility container'
+    echo 'Installing during upgrade test on ${controller_name}_utility container'
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
             cd /root/
-            . /root/rally/bin/activate
             source openrc
             rally-manage db recreate
             rally deployment create --fromenv --name=existing
             rally deployment use --deployment existing
-            cd \$TEMPEST_DIR/rally/rally-scenarios/
+            cd /rally.git/rally-scenarios/
             rally task start osic-keystone-prime-scenario.json --task-args-file args.yaml
             rally task start osic-nova-1-server-scenario.json --task-args-file args.yaml
         '''
@@ -281,18 +283,17 @@ def prime_rally_benchmarks(controller_name='controller01', tempest_dir=null) {
 
 def run_rally_benchmarks(controller_name='controller01', tempest_dir=null, results_file = 'results') {
     String host_ip = get_deploy_node_ip()
-    String container_ip = get_controller_utility_container_ip(controller_name)
+//    String container_ip = get_controller_utility_container_ip(controller_name)
 
     sh """
         ssh -o StrictHostKeyChecking=no\
-        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${container_ip} '''
-            cd \$TEMPEST_DIR
-            . \$TEMPEST_DIR/rally/bin/activate
+        -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
+            cd /root/
             source openrc
             rally deployment use --deployment existing
-            cd \$TEMPEST_DIR/rally/rally-scenarios/
+            cd /rally.git/rally-scenarios/
             rally task start benchmark.json --task-args-file args.yaml
-            rally task results > \$TEMPEST_DIR/output/${results_file}.json
+            rally task results > /output/${results_file}.json
             deactivate
         '''
     """
