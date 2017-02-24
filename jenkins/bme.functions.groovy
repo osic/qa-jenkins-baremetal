@@ -238,22 +238,36 @@ def parse_persistent_resources_tests(controller_name='controller01', tempest_dir
     """
 }
 
+def copy_tempest_configuration_for_rally(controller_name='controller01'){
+  String container_ip = get_controller_utility_container_ip(controller_name)
+  String host_ip = get_deploy_node_ip()
+
+  try {
+      sh """
+          scp -o StrictHostKeyChecking=no\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -r root@${container_ip}:/etc/tempest.conf .
+
+          scp -o StrictHostKeyChecking=no\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -r etc root@${container_ip}:/root/openrc
+      """
+  } catch(err) {
+      echo "Error moving tempest etc directory"
+      echo err.message
+  }
+}
+
 def install_rally(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
 
-    echo 'Installing during upgrade test on ${controller_name}_utility container'
+    echo 'Installing during upgrade test on ${controller_name}'
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
-            rm -rf rally.git/
+            rm -rf rally.git/ || echo "rally directory does not exist"
             apt-get install -y libpq-dev libxml2-dev libxslt1-dev
             wget -q -O- https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh | bash
-            scp -o StrictHostKeyChecking=no\
-            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-            -r root@${controller_name}: ~/etc/tempest.conf
-            scp -o StrictHostKeyChecking=no\
-            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-            -r root@${controller_name}: ~/openrc
             cd rally.git/
             git clone https://github.com/osic/rally-scenarios.git
             cd rally-scenarios/
@@ -265,7 +279,7 @@ def install_rally(controller_name='controller01', tempest_dir=null) {
 def prime_rally_benchmarks(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
 
-    echo 'Installing during upgrade test on ${controller_name}_utility container'
+    echo 'Installing during upgrade test on ${controller_name}'
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
