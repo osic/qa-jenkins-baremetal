@@ -246,11 +246,11 @@ def copy_tempest_configuration_for_rally(controller_name='controller01'){
       sh """
           scp -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-          -r root@${container_ip}:/etc/tempest.conf .
+          root@${container_ip}:/etc/tempest.conf .
 
           scp -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-          -r etc root@${container_ip}:/root/openrc
+          root@${container_ip}:/root/openrc .
       """
   } catch(err) {
       echo "Error moving tempest etc directory"
