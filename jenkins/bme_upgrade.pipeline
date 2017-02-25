@@ -231,18 +231,18 @@ stage('Post-Upgrade -- Validate Deploy'){
           echo "Error in step"
           echo err.message
         }
-//        try {
-//          bme.prime_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged')
-//        } catch (err){
-//          echo "Error in step"
-//          echo err.message
-//        }
-//        try {
-//          bme.run_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged', 'after_upgrade')
-//        } catch (err){
-//          echo "Error in step"
-//          echo err.message
-//        }
+        try {
+          bme.prime_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged')
+        } catch (err){
+          echo "Error in step"
+          echo err.message
+        }
+        try {
+          bme.run_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged', 'after_upgrade')
+        } catch (err){
+          echo "Error in step"
+          echo err.message
+        }
         try {
             bme.parse_persistent_resources_tests(controller_name, '/opt/tempest_untagged')
         } catch (err){
