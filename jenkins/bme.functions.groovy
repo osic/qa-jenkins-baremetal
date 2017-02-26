@@ -315,7 +315,7 @@ def run_rally_benchmarks(controller_name='controller01', tempest_dir=null, resul
             rally deployment use --deployment existing
             cd rally.git/rally-scenarios/
             rally task start benchmark.json --task-args-file args.yaml
-            rally task results > /output/${results_file}.json
+            rally task results > /root/output/${results_file}.json
         '''
     """
 }
