@@ -494,8 +494,8 @@ def parse_results() {
     -a $HOME/subunit/smoke/after_upgrade -p $HOME/output/persistent_resource.txt\
     -g \$HOME/output/swift_api_status.json -w \$HOME/output/nova_api_status.json
     elastic-upgrade -s $HOME/output/nova_status.json,$HOME/output/swift_status.json,$HOME/output/keystone_status.json
-    #cat \$HOME/output/before_upgrade.json | elastic-benchmark -e rally-before_upgrade
-    #cat \$HOME/output/after_upgrade.json | elastic-benchmark -e rally-after_upgrade
+    cat \$HOME/output/before_upgrade.json | elastic-benchmark -e rally-before_upgrade
+    cat \$HOME/output/after_upgrade.json | elastic-benchmark -e rally-after_upgrade
     '''
 
 }
