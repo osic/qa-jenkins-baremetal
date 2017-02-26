@@ -332,7 +332,15 @@ def transfer_tempest_configuration_to_controller(controller_name='controller01')
 
           scp -o StrictHostKeyChecking=no\
           -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -r root@${container_ip}:/root/openrc .
+
+          scp -o StrictHostKeyChecking=no\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
           -r etc root@${controller_name}:/root/
+
+          scp -o StrictHostKeyChecking=no\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -r openrc root@${controller_name}:/root/
       """
   } catch(err) {
       echo "Error moving tempest etc directory"
