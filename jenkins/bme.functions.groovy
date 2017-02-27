@@ -269,7 +269,7 @@ def copy_tempest_configuration_for_rally(controller_name='controller01'){
 def install_rally(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
 
-    echo 'Installing during upgrade test on ${controller_name}'
+    echo 'Installing rally on ${controller_name}'
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
@@ -287,7 +287,7 @@ def install_rally(controller_name='controller01', tempest_dir=null) {
 def prime_rally_benchmarks(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
 
-    echo 'Installing during upgrade test on ${controller_name}'
+    echo 'Priming rally benchmarks on ${controller_name}'
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
@@ -306,7 +306,8 @@ def prime_rally_benchmarks(controller_name='controller01', tempest_dir=null) {
 def run_rally_benchmarks(controller_name='controller01', tempest_dir=null, results_file = 'results') {
     String host_ip = get_deploy_node_ip()
 //    String container_ip = get_controller_utility_container_ip(controller_name)
-
+    
+    echo 'Running rally benchmarks on ${controller_name}'
     sh """
         ssh -o StrictHostKeyChecking=no\
         -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
