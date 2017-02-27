@@ -301,7 +301,7 @@ def prime_rally_benchmarks(controller_name='controller01', tempest_dir=null) {
             rally-manage db recreate
             rally deployment create --fromenv --name=existing
             rally deployment use --deployment existing
-            cd /rally.git/rally-scenarios/
+            cd rally.git/rally-scenarios/
             rally task start osic-keystone-prime-scenario.json --task-args-file args.yaml
             rally task start osic-nova-1-server-scenario.json --task-args-file args.yaml
         '''
