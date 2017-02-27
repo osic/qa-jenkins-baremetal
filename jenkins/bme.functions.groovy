@@ -238,7 +238,7 @@ def parse_persistent_resources_tests(controller_name='controller01', tempest_dir
     """
 }
 
-def copy_tempest_configuration_for_rally(controller_name='controller01'){
+/*def copy_tempest_configuration_for_rally(controller_name='controller01'){
   String container_ip = get_controller_utility_container_ip(controller_name)
   String host_ip = get_deploy_node_ip()
 
@@ -269,7 +269,7 @@ def copy_tempest_configuration_for_rally(controller_name='controller01'){
       echo "Error moving tempest config and openrc directory"
       echo err.message
   }
-}
+}*/
 
 def install_rally(controller_name='controller01', tempest_dir=null) {
     String host_ip = get_deploy_node_ip()
