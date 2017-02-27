@@ -245,19 +245,19 @@ def copy_tempest_configuration_for_rally(controller_name='controller01'){
   try {
       sh """
           scp -o StrictHostKeyChecking=no\
-          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-          root@${container_ip}:/opt/tempest_untagged/etc/tempest.conf .
+          -o ProxyCommand='ssh -W %h:%p root@${container_ip}:/opt/tempest_untagged/etc/tempest.conf \
+          root@${host_ip}:/root/
 
           scp -o StrictHostKeyChecking=no\
-          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
-          root@${container_ip}:/root/openrc .
+          -o ProxyCommand='ssh -W %h:%p root@${container_ip}:/root/openrc \
+          root@${host_ip}:/root/
 
           scp -o StrictHostKeyChecking=no\
-          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}:/root/openrc \
           /root/tempest.conf root@${controller_name}:/root/
 
           scp -o StrictHostKeyChecking=no\
-          -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+          -o ProxyCommand='ssh -W %h:%p root@${host_ip}:/root/tempest.conf \
           /root/openrc root@${controller_name}:/root/
       """
   } catch(err) {
