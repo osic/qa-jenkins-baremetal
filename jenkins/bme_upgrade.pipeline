@@ -88,84 +88,84 @@ stage('Pre-Upgrade Configuration'){
         bme.clear_ssh_host_key(controller_name)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step clear_ssh_host_ke"
             echo err.message
       }
       try {
         bme.transfer_tempest_configuration_to_controller(controller_name)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step transfer_tempest_configuration_to_controller"
             echo err.message
       }
       try {
 	bme.install_api_uptime_tests(controller_name, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step install_api_uptime_test"
             echo err.message
       }
       try {  
 	bme.install_during_upgrade_tests(controller_name, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step install_during_upgrade_tests"
             echo err.message
       }
       try {  
 	bme.install_persistent_resources_tests(controller_name, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step install_persistent_resources_tests"
             echo err.message
       }
       try {  
 	bme.install_persistent_resources_tests_parse(controller_name, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step install_persistent_resources_tests_parse"
             echo err.message
       }
       try {
 	  bme.copy_tempest_configuration_for_rally(controller_name)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step copy_tempest_configuration_for_rally"
             echo err.message
       }
       try {
 	  bme.install_rally(controller_name, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step install_rally"
             echo err.message
       }
       try {
 	  bme.prime_rally_benchmarks(controller_name, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step prime_rally_benchmarks"
             echo err.message
       }
       try {
 	  bme.run_rally_benchmarks(controller_name, container_tempest_dir, 'before_upgrade')
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step run_rally_benchmarks"
             echo err.message 
       }
       try {  
 	bme.run_persistent_resources_tests(controller_name, 'create', null, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step run_persistent_resources_tests"
             echo err.message
       }
       try {  
 	bme.run_persistent_resources_tests(controller_name, 'verify', 'before_upgrade', container_tempest_dir)
       } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step run_persistent_resources_tests"
             echo err.message
       }
 
@@ -196,57 +196,57 @@ stage('Post-Upgrade -- Validate Deploy'){
           //pause just a bit after tests installed, before configuring
           sh "sleep 300"
         } catch (err){
-          echo "Error in step"
+          echo "Error in step install_tempest_tests"
           echo err.message
         }
         try {
             bme.configure_tempest(controller_name, '/openstack/venvs/tempest-untagged')
         } catch (err){
             sh "sleep 300"
-            echo "Error in step"
+            echo "Error in step configure_tempest"
             echo err.message
         }
         try {
             sh "sleep 300"
             bme.run_tempest_tests(controller_name, 'smoke', 'after_upgrade', elasticsearch_ip, '/openstack/venvs/tempest-untagged')
         } catch (err){
-            echo "Error in step"
+            echo "Error in step run_tempest_tests"
             echo err.message
         }
         try {
             bme.run_persistent_resources_tests(controller_name, 'verify', 'after_upgrade', '/openstack/venvs/tempest-untagged')
         } catch (err){
-            echo "Error in step"
+            echo "Error in step run_persistent_resources_test"
             echo err.message
         }
         try {
           bme.run_persistent_resources_tests(controller_name, 'clean', null, '/openstack/venvs/tempest-untagged')
         } catch (err){
-          echo "Error in step"
+          echo "Error in step run_persistent_resources_test"
           echo err.message
         }
         try {
           bme.install_persistent_resources_tests_parse(controller_name, '/openstack/venvs/tempest-untagged')
         } catch (err){
-          echo "Error in step"
+          echo "Error in step install_persistent_resources_tests_parse"
           echo err.message
         }
         try {
           bme.prime_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged')
         } catch (err){
-          echo "Error in step"
+          echo "Error in step prime_rally_benchmarks"
           echo err.message
         }
         try {
           bme.run_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged', 'after_upgrade')
         } catch (err){
-          echo "Error in step"
+          echo "Error in step run_rally_benchmarks"
           echo err.message
         }
         try {
             bme.parse_persistent_resources_tests(controller_name, '/opt/tempest_untagged')
         } catch (err){
-            echo "Error in step"
+            echo "Error in step parse_persistent_resources_tests"
             echo err.message
         }
     }
@@ -257,7 +257,7 @@ stage('Post-Upgrade -- Reporting'){
       try {
           bme.aggregate_results(deploy_node_ip, elasticsearch_ip, container_tempest_dir, controller_name)
       } catch (err){
-          echo "Error in step"
+          echo "Error in step aggregate_results"
           echo err.message
       }
     }
@@ -265,13 +265,13 @@ stage('Post-Upgrade -- Reporting'){
       try {
           osa.install_parser()
       } catch (err){
-          echo "Error in step"
+          echo "Error in step install_parse"
           echo err.message
       }
       try {
           osa.parse_results()
       } catch (err){
-          echo "Error in step"
+          echo "Error in step parse_results"
           echo err.message
       }
     }
