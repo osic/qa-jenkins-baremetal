@@ -99,7 +99,7 @@ def configure_tempest(controller_name='controller01', tempest_dir=null){
             cd \$TEMPEST_DIR
             if [[ -f etc/tempest.conf ]]; then
                 mv etc/tempest.conf etc/tempest.conf.orig
-                wget https://raw.githubusercontent.com/osic/qa-jenkins-onmetal/master/jenkins/tempest.conf -O etc/tempest.conf
+                wget https://raw.githubusercontent.com/osic/qe-jenkins-baremetal/master/jenkins/tempest.conf -O etc/tempest.conf
                 # tempest.conf exists, overwrite it with required vars
                 keys="admin_password image_ref image_ref_alt uri uri_v3 public_network_id"
                 for key in \$keys
@@ -311,7 +311,7 @@ def prime_rally_benchmarks(controller_name='controller01', tempest_dir=null) {
 def run_rally_benchmarks(controller_name='controller01', tempest_dir=null, results_file = 'results') {
     String host_ip = get_deploy_node_ip()
 //    String container_ip = get_controller_utility_container_ip(controller_name)
-    
+
     echo 'Running rally benchmarks on ${controller_name}'
     sh """
         ssh -o StrictHostKeyChecking=no\
