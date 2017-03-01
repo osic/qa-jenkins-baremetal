@@ -135,7 +135,7 @@ stage('Pre-Upgrade Configuration'){
             echo err.message
       }
       try {
-	  bme.prime_rally_benchmarks(controller_name, container_tempest_dir, upgrade)
+	  bme.prime_rally_benchmarks(controller_name, container_tempest_dir)
       } catch (err){
             sh "sleep 300"
             echo "Error in step prime_rally_benchmarks"
@@ -227,7 +227,7 @@ stage('Post-Upgrade -- Validate Deploy'){
           echo err.message
         }
         try {
-          bme.prime_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged', upgrade)
+          bme.prime_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged')
         } catch (err){
           echo "Error in step prime_rally_benchmarks"
           echo err.message
