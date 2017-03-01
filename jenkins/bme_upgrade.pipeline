@@ -84,7 +84,7 @@ node('bme-jenkins-slave-n01'){
 
 stage('Pre-Upgrade Configuration'){
     node('bme-jenkins-slave-n01'){
-      upgrade = "before"
+      upgrade = "before_upgrade"
       try {    
         bme.clear_ssh_host_key(controller_name)
       } catch (err){
@@ -185,7 +185,7 @@ node('bme-jenkins-slave-n01'){
 
 stage('Post-Upgrade -- Validate Deploy'){
     node('bme-jenkins-slave-n01'){
-	upgrade = "after"
+	upgrade = "after_upgrade"
         try {
           bme.install_tempest_tests(controller_name)
           //pause just a bit after tests installed, before configuring
