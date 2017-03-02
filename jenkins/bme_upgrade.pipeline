@@ -2,7 +2,7 @@
 
 def osa, common, bme
 String workspace_dir
-String container_tempest_dir, deploy_node_ip, controller_utility_container_ip, elasticsearch_ip, elasticsearch_pkey, upgrade
+String container_tempest_dir, deploy_node_ip, controller_utility_container_ip, elasticsearch_ip, elasticsearch_pkey
 
 // Jenkins must provide these variables as parameters or the build
 // will fail:
@@ -84,7 +84,6 @@ node('bme-jenkins-slave-n01'){
 
 stage('Pre-Upgrade Configuration'){
     node('bme-jenkins-slave-n01'){
-      upgrade = "before_upgrade"
       try {    
         bme.clear_ssh_host_key(controller_name)
       } catch (err){
@@ -142,7 +141,7 @@ stage('Pre-Upgrade Configuration'){
             echo err.message
       }
       try {
-	  bme.run_rally_benchmarks(controller_name, container_tempest_dir, upgrade)
+	  bme.run_rally_benchmarks(controller_name, container_tempest_dir, 'before_upgrade')
       } catch (err){
             sh "sleep 300"
             echo "Error in step run_rally_benchmarks"
@@ -185,7 +184,6 @@ node('bme-jenkins-slave-n01'){
 
 stage('Post-Upgrade -- Validate Deploy'){
     node('bme-jenkins-slave-n01'){
-	upgrade = "after_upgrade"
         try {
           bme.install_tempest_tests(controller_name)
           //pause just a bit after tests installed, before configuring
@@ -233,7 +231,7 @@ stage('Post-Upgrade -- Validate Deploy'){
           echo err.message
         }
         try {
-          bme.run_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged', upgrade)
+          bme.run_rally_benchmarks(controller_name, '/openstack/venvs/tempest-untagged', 'after_upgrade')
         } catch (err){
           echo "Error in step run_rally_benchmarks"
           echo err.message
