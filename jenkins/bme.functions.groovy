@@ -320,7 +320,7 @@ def run_rally_benchmarks(controller_name='controller01', tempest_dir=null, resul
             source openrc
             rally deployment use --deployment existing
             cd rally.git/rally-scenarios/
-            rally task start benchmark.json --task-args-file args.yaml  --task-args "upgrade "${results_file}""
+            rally task start benchmark.json --task-args-file args.yaml
             rally task results > /root/output/${results_file}.json
         '''
     """
