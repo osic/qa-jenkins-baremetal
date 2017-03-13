@@ -548,8 +548,8 @@ def rebuild_environment() {
 
     sh """
         ssh -o StrictHostKeyChecking=no root@${host_ip} '''
-            cd /root
-            bash rebuild_environment.sh
+            cd /root/qa-jenkins-baremetal
+            bash rebuild_environment.sh stable/newton
         '''
     """
 }
