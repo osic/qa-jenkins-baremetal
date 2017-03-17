@@ -186,13 +186,6 @@ stage('Post-Upgrade -- Validate Deploy'){
           echo err.message
         }
         try {
-            bme.configure_tempest(controller_name)
-        } catch (err){
-            sh "sleep 300"
-            echo "Error in step configure_tempest"
-            echo err.message
-        }
-        try {
             sh "sleep 300"
             bme.run_tempest_tests(controller_name, 'smoke', 'after_upgrade', elasticsearch_ip)
         } catch (err){
