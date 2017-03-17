@@ -166,7 +166,7 @@ node('bme-jenkins-slave-n01'){
 	bme.start_nova_during_upgrade_test(controller_name)
     }
     stage('Run Upgrade'){
-	      bme.bash_upgrade_openstack(to_release, 1, false)
+	      bme.bash_upgrade_openstack(to_release, 1)
     }
     stage('Stop Upgrade tests'){
         bme.clear_ssh_host_key(controller_name)
