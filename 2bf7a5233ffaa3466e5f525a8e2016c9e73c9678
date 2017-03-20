@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c082010a_f2f4fa18",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1010706
+      },
+      "writtenOn": "2017-03-20T17:54:06Z",
+      "side": 1,
+      "message": "This line of the commit message is longer than it should by one character, in the future, please stick to the rules here https://wiki.openstack.org/wiki/GitCommitMessages",
+      "revId": "2bf7a5233ffaa3466e5f525a8e2016c9e73c9678",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
