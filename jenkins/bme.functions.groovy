@@ -78,6 +78,26 @@ def run_tempest_tests(controller_name='controller01', regex='smoke', results_fil
         echo "Tempest tests succeeded"
     }
     echo tempest_output
+    try {
+        sh """
+            ssh -o StrictHostKeyChecking=no\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
+                cd /root/tempest/
+                testr last --subunit | subunit2junitxml > tempest_junit_results.xml
+            '''
+        """
+        sh """
+            scp -o StrictHostKeyChecking=no\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+             root@${controller_name}:/root/tempest/tempest_junit_results.xml .
+         """
+         step([$class: 'XUnitBuilder',
+                thresholds: [[$class: 'FailedThreshold', unstableThreshold: '3']],
+                tools: [[$class: 'JUnitType', pattern: 'tempest_junit_results.xml']]])
+      } catch(err) {
+          echo "Error running junit tests"
+          echo err.message
+      }
 }
 
 def install_persistent_resources_tests(controller_name='controller01') {
@@ -138,6 +158,26 @@ def run_persistent_resources_tests(controller_name='controller01', action='verif
             cp .testrepository/\$stream_id subunit/persistent_resources/${results_file}
         '''
     """
+    try {
+        sh """
+            ssh -o StrictHostKeyChecking=no\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}' root@${controller_name} '''
+                cd /root/tempest/
+                testr last --subunit | subunit2junitxml > persistent_${action}_junit_results.xml
+            '''
+        """
+        sh """
+            scp -o StrictHostKeyChecking=no\
+            -o ProxyCommand='ssh -W %h:%p root@${host_ip}'\
+             root@${controller_name}:/root/tempest/persistent_${action}_junit_results.xml .
+         """
+         step([$class: 'XUnitBuilder',
+                thresholds: [[$class: 'FailedThreshold', unstableThreshold: '3']],
+                tools: [[$class: 'JUnitType', pattern: 'persistent_${action}_junit_results.xml']]])
+    } catch(err) {
+        echo "Error running junit on persistent-${action} tests"
+        echo err.message
+    }
 }
 
 def parse_persistent_resources_tests(controller_name='controller01'){
@@ -371,6 +411,8 @@ def install_tempest_tests(controller_name='controller01') {
                 cd tempest/
             fi
             pip install --upgrade .
+            # for junit results
+            pip install --upgrade junitxml
             testr init || echo "already configured"
             mkdir subunit || echo "subunit directory exists"
         '''
