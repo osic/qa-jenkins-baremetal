@@ -644,7 +644,7 @@ def bash_upgrade_openstack(release='master', retries=2) {
                 echo "------------------------------------"
                 break
             } else if (i == (retries -1)){
-                echo "Upgrade failed, exceeded retries"
+                error "Upgrade failed, exceeded retries"
             }
         }
     }
