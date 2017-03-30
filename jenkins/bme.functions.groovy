@@ -664,8 +664,18 @@ def run_upgrade_return_results(release="master", host_ip="127.0.0.1"){
 
         git checkout ${release}
         git pull
+        scripts/bootstrap-ansible.sh
         #LATEST_TAG=\$(git describe --abbrev=0 --tags)
         #git checkout \${LATEST_TAG}
+        ######################
+        # Cheat - use fix for 1673889
+        ######################
+        mv /opt/openstack-ansible/ansible-role-requirements.yml{,.bak}
+        # get the gist of the ansible-role-requirements with the cheat
+        wget https://gist.githubusercontent.com/dankolbrs/6224de079f4815838e6d2fb12943d083/raw/d9043e572613578a2c04ce9514c52a8a96b24802/ansible-role-requirements.yml
+        ######################
+        # End cheat
+        ######################
         export TERM=xterm
         export I_REALLY_KNOW_WHAT_I_AM_DOING=true
         echo "YES" | bash scripts/run-upgrade.sh 2>&1 || echo "Failed Upgrade"
