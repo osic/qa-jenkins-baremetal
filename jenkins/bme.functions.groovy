@@ -609,8 +609,8 @@ def bash_upgrade_openstack(release='master', retries=2) {
     // log upgrade start time
     sh """
         echo "Started: \$(date +%s)" > upgrade_time.txt
-        version_start=\$(ssh -o StrictHostKeyChecking=no root@${host_ip} \"cd /opt/openstack-ansible; git status | head -1\")
-        echo \${version_start} >> upgrade_time.txt
+        version_start=\$(ssh -o StrictHostKeyChecking=no root@${host_ip} \"cd /opt/openstack-ansible; git status | head -1 | cut -d\\\" \\\" -f3\")
+        echo "version_start: \${version_end}" >> upgrade_time.txt
     """
 
     upgrade_output = run_upgrade_return_results(release, host_ip)
@@ -635,8 +635,9 @@ def bash_upgrade_openstack(release='master', retries=2) {
                 // log upgrade end time
                 sh """
                     echo "Completed: \$(date +%s)" >> upgrade_time.txt
-                    version_end=\$(ssh -o StrictHostKeyChecking=no root@${host_ip} \"cd /opt/openstack-ansible; git status | head -1\")
-                    echo \${version_end} >> upgrade_time.txt
+                    version_end=\$(ssh -o StrictHostKeyChecking=no root@${host_ip} \"cd /opt/openstack-ansible; git status | head -1 | cut -d\\\" \\\" -f3\")
+                    echo "version_end: \${version_end}" >> upgrade_time.txt
+                    echo "Upgrade: pass" >> upgrade_time.txt
                 """
                 echo "Echoing Upgrade Results for retry #" + (i + 1)
                 echo "------------------------------------"
@@ -644,6 +645,12 @@ def bash_upgrade_openstack(release='master', retries=2) {
                 echo "------------------------------------"
                 break
             } else if (i == (retries -1)){
+                sh """
+                    echo "Completed: \$(date +%s)" >> upgrade_time.txt
+                    version_end=\$(ssh -o StrictHostKeyChecking=no root@${host_ip} \"cd /opt/openstack-ansible; git status | head -1 | cut -d\\\" \\\" -f3\")
+                    echo "version_end: \${version_end}" >> upgrade_time.txt
+                    echo "Upgrade: fail" >> upgrade_time.txt
+                """
                 error "Upgrade failed, exceeded retries"
             }
         }
