@@ -671,6 +671,7 @@ def run_upgrade_return_results(release="master", host_ip="127.0.0.1"){
 
         git checkout ${release}
         git pull
+        bash scripts/bootstrap-ansible.sh
         #LATEST_TAG=\$(git describe --abbrev=0 --tags)
         #git checkout \${LATEST_TAG}
         export TERM=xterm
