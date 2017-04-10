@@ -1,0 +1,130 @@
+#!/usr/bin/env groovy
+
+def osa, common, bme
+String workspace_dir
+String deploy_node_ip, elasticsearch_ip, elasticsearch_pkey
+
+// Jenkins must provide these variables as parameters or the build
+// will fail:
+//  - to_release
+//  - rebuild_environment
+//  - controller_name (i.e. controller01) - determines location of utility container to run tests
+
+// *******************************
+stage('Pre-Deployment -- Load Libs'){
+    // *******************************
+    node('bme-jenkins-slave-n01') {
+        // Load the external functions using master since the git command
+        // might not be available at the agent yet
+        fileLoader.withGit('https://github.com/osic/qe-jenkins-baremetal.git', 'master', null, '') {
+            common = fileLoader.load('jenkins/common.groovy');
+            osa = fileLoader.load('jenkins/osa_onmetal.functions.groovy');
+            bme = fileLoader.load('jenkins/bme.functions.groovy');
+        }
+        git 'https://github.com/osic/qe-jenkins-baremetal.git'
+    }
+
+    node('elasticsearch') {
+        echo 'Get the server information'
+        elasticsearch_ip = common.get_server_ip()
+        elasticsearch_pkey = common.get_server_public_key()
+    }
+}
+
+stage('Pre-Deployment -- Configure Network on Jenkins Build Node'){
+    node('bme-jenkins-slave-n01') {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'b4df0136-d403-4e1c-a62b-10d751505d77',
+        usernameVariable: 'CLOUD_USER', passwordVariable: 'CLOUD_PASS']]) {
+            bme.connect_vpn("72.32.87.87", "${CLOUD_USER}", "${CLOUD_PASS}")
+
+            echo 'Configure ansible hosts file for SSH'
+            sh """
+                echo "[deploy_node]" > hosts
+                echo "intelci-node ansible_ssh_host=172.24.0.21 ansible_ssh_user=root" >> hosts
+            """
+        }
+        deploy_node_ip = bme.get_deploy_node_ip()
+    }
+}
+
+stage('Clean up previous run results'){
+    node('elasticsearch'){
+        bme.cleanup_test_results()
+    }
+}
+
+node('bme-jenkins-slave-n01'){
+    // env prep
+    if (rebuild_environment == "true"){
+        stage('Rebuilding Environment and redeploying openstack'){
+            bme.rebuild_environment()
+        }
+    } else {
+      stage('Skipping rebuild'){
+        echo 'Skipping rebuild environment and redeploy OpenStack.'
+      }
+    }
+}
+
+node('bme-jenkins-slave-n01'){
+    stage('Install and Configure tempest'){
+        bme.setup_ssh_pub_key()
+        bme.install_tempest_tests(controller_name)
+    }
+    stage('Run Tempest Smoke Tests') {
+        bme.run_tempest_tests(controller_name, 'smoke', 'before_upgrade', elasticsearch_ip)
+    }
+}
+
+stage('Pre-Upgrade Configuration'){
+    node('bme-jenkins-slave-n01'){
+      try {
+          bme.clear_ssh_host_key(controller_name)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step clear_ssh_host_key"
+            echo err.message
+      }
+      try {
+          bme.transfer_tempest_configuration_to_controller(controller_name)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step transfer_tempest_configuration_to_controller"
+            echo err.message
+      }
+      try {
+	        bme.install_api_uptime_tests(controller_name)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step install_api_uptime_test"
+            echo err.message
+      }
+      try {
+	       bme.install_during_upgrade_tests(controller_name)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step install_during_upgrade_tests"
+            echo err.message
+      }
+      try {
+	       bme.install_persistent_resources_tests(controller_name)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step install_persistent_resources_tests"
+            echo err.message
+      }
+      try {
+	       bme.install_persistent_resources_tests_parse(controller_name)
+      } catch (err){
+            sh "sleep 300"
+            echo "Error in step install_persistent_resources_tests_parse"
+            echo err.message
+      }
+    }
+}
+
+stage('Complete - Disconnect from VPN'){
+    node('bme-jenkins-slave-n01'){
+        bme.disconnect_vpn()
+    }
+}
